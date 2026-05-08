@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="16"
+      fx:controller="lk.ijse.serenity.controller.UserPanelController">
+
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <VBox HBox.hgrow="ALWAYS">
+            <Label text="User Management" styleClass="page-title"/>
+            <Label text="Admin only — manage system users and roles" styleClass="page-subtitle"/>
+        </VBox>
+        <Button text="+ Add User" styleClass="btn-primary" onAction="#openAddDialog"/>
+    </HBox>
+
+    <VBox styleClass="card" VBox.vgrow="ALWAYS">
+        <TableView fx:id="userTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="colUsername" text="Username" prefWidth="150"/>
+                <TableColumn fx:id="colFullName" text="Full Name" prefWidth="180"/>
+                <TableColumn fx:id="colEmail" text="Email" prefWidth="200"/>
+                <TableColumn fx:id="colRole" text="Role" prefWidth="120"/>
+                <TableColumn fx:id="colActions" text="Actions" prefWidth="150"/>
+            </columns>
+            <placeholder>
+                <Label text="No users found."/>
+            </placeholder>
+        </TableView>
+    </VBox>
+
+    <!-- Add User Form -->
+    <VBox fx:id="formCard" styleClass="card" spacing="14" managed="false" visible="false">
+        <HBox alignment="CENTER_LEFT">
+            <Label fx:id="formTitle" text="Add New User"
+                   style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#1a3a3c;" HBox.hgrow="ALWAYS"/>
+            <Button text="✕" styleClass="btn-secondary,btn-small" onAction="#closeForm"/>
+        </HBox>
+        <Separator/>
+        <GridPane hgap="16" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50"/>
+                <ColumnConstraints percentWidth="50"/>
+            </columnConstraints>
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="Username *" styleClass="form-label"/>
+                <TextField fx:id="fUsername" promptText="e.g. john_doe"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="Full Name" styleClass="form-label"/>
+                <TextField fx:id="fFullName" promptText="e.g. John Doe"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label text="Email" styleClass="form-label"/>
+                <TextField fx:id="fEmail" promptText="john@serenity.lk" onKeyReleased="#validateEmail"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Label text="Role *" styleClass="form-label"/>
+                <ComboBox fx:id="fRole" prefWidth="999"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                <Label text="Password * (min 8 chars, 1 letter + 1 digit)" styleClass="form-label"/>
+                <PasswordField fx:id="fPassword" promptText="Enter password"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <Label text="Confirm Password *" styleClass="form-label"/>
+                <PasswordField fx:id="fConfirm" promptText="Repeat password"/>
+            </VBox>
+        </GridPane>
+        <Label fx:id="formError" styleClass="error-label" wrapText="true"/>
+        <HBox spacing="10">
+            <Button text="Create User" styleClass="btn-primary" onAction="#saveUser"/>
+            <Button text="Cancel" styleClass="btn-secondary" onAction="#closeForm"/>
+        </HBox>
+    </VBox>
+</VBox>

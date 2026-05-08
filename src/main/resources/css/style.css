@@ -1,0 +1,349 @@
+/* =========================================================
+   Serenity Mental Health Therapy Center — Global Stylesheet
+   ========================================================= */
+
+/* ── Root & Base ── */
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 13px;
+    -fx-background-color: #f0f4f8;
+}
+
+/* ── Login Screen ── */
+.login-root {
+    -fx-background-color: linear-gradient(to bottom right, #1a6b72, #0d4a52);
+}
+
+.login-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 24, 0, 0, 8);
+    -fx-padding: 40 48 40 48;
+}
+
+.login-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a6b72;
+}
+
+.login-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #7a8a95;
+}
+
+.login-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #455a64;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+    -fx-background-color: #1a6b72;
+    -fx-min-width: 220px;
+    -fx-max-width: 220px;
+}
+
+.sidebar-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 0 0 4 0;
+}
+
+.sidebar-subtitle {
+    -fx-font-size: 11px;
+    -fx-text-fill: rgba(255, 255, 255, 0.65);
+}
+
+.nav-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255, 255, 255, 0.85);
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 16;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-background-radius: 8;
+    -fx-pref-width: 190;
+}
+
+.nav-btn:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-text-fill: white;
+}
+
+.nav-btn-active {
+    -fx-background-color: rgba(255, 255, 255, 0.22);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.nav-section {
+    -fx-font-size: 10px;
+    -fx-text-fill: rgba(255, 255, 255, 0.45);
+    -fx-padding: 14 16 4 16;
+    -fx-font-weight: bold;
+}
+
+.sidebar-footer {
+    -fx-background-color: rgba(0, 0, 0, 0.15);
+    -fx-padding: 12 16;
+}
+
+.user-name-lbl {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.user-role-lbl {
+    -fx-text-fill: rgba(255, 255, 255, 0.6);
+    -fx-font-size: 11px;
+}
+
+/* ── Content Area ── */
+.content-area {
+    -fx-background-color: #f0f4f8;
+    -fx-padding: 24;
+}
+
+.page-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a3a3c;
+}
+
+.page-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #7a8a95;
+}
+
+/* ── Cards ── */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.07), 8, 0, 0, 2);
+    -fx-padding: 20;
+}
+
+.stat-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.07), 8, 0, 0, 2);
+    -fx-padding: 16 20;
+    -fx-min-width: 150;
+}
+
+.stat-number {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a6b72;
+}
+
+.stat-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #7a8a95;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+    -fx-background-color: #1a6b72;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 9 20;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #145a61;
+}
+
+.btn-primary:pressed {
+    -fx-background-color: #0e4348;
+}
+
+.btn-secondary {
+    -fx-background-color: #e8f4f5;
+    -fx-text-fill: #1a6b72;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 9 20;
+    -fx-cursor: hand;
+    -fx-border-color: #b2d8db;
+    -fx-border-radius: 8;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #d0eaed;
+}
+
+.btn-danger {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 9 20;
+    -fx-cursor: hand;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #c0392b;
+}
+
+.btn-warning {
+    -fx-background-color: #f39c12;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 9 20;
+    -fx-cursor: hand;
+}
+
+.btn-warning:hover {
+    -fx-background-color: #d68910;
+}
+
+.btn-small {
+    -fx-padding: 5 12;
+    -fx-font-size: 11px;
+}
+
+/* ── Form Fields ── */
+.form-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #455a64;
+}
+
+.text-field, .password-field, .text-area, .combo-box, .date-picker {
+    -fx-background-color: white;
+    -fx-border-color: #dce3e8;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 12;
+    -fx-font-size: 13px;
+}
+
+.text-field:focused, .password-field:focused,
+.text-area:focused, .combo-box:focused, .date-picker:focused {
+    -fx-border-color: #1a6b72;
+    -fx-effect: dropshadow(gaussian, rgba(26, 107, 114, 0.2), 6, 0, 0, 0);
+}
+
+/* ── Table ── */
+.table-view {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: transparent;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f5f9fa;
+    -fx-background-radius: 10 10 0 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-text-fill: #455a64;
+    -fx-padding: 10 12;
+}
+
+.table-row-cell {
+    -fx-border-color: transparent transparent #f0f4f8 transparent;
+    -fx-cell-size: 40px;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #e8f4f5;
+    -fx-text-fill: #1a3a3c;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #f5fbfb;
+}
+
+/* ── Status Badges ── */
+.badge-scheduled {
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #1565c0;
+    -fx-background-radius: 4;
+    -fx-padding: 2 8;
+}
+
+.badge-completed {
+    -fx-background-color: #e8f5e9;
+    -fx-text-fill: #2e7d32;
+    -fx-background-radius: 4;
+    -fx-padding: 2 8;
+}
+
+.badge-cancelled {
+    -fx-background-color: #ffebee;
+    -fx-text-fill: #c62828;
+    -fx-background-radius: 4;
+    -fx-padding: 2 8;
+}
+
+.badge-rescheduled {
+    -fx-background-color: #fff3e0;
+    -fx-text-fill: #e65100;
+    -fx-background-radius: 4;
+    -fx-padding: 2 8;
+}
+
+/* ── Alerts / Notifications ── */
+.error-label {
+    -fx-text-fill: #c0392b;
+    -fx-font-size: 11px;
+}
+
+.success-label {
+    -fx-text-fill: #27ae60;
+    -fx-font-size: 11px;
+}
+
+.info-bar {
+    -fx-background-color: #e8f4f5;
+    -fx-background-radius: 8;
+    -fx-padding: 10 14;
+}
+
+/* ── Separator ── */
+.separator .line {
+    -fx-border-color: #e2eaed;
+}
+
+/* ── ScrollPane ── */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ── Tab Pane ── */
+.tab-pane .tab-header-area .tab {
+    -fx-background-color: #e8f4f5;
+    -fx-background-radius: 8 8 0 0;
+    -fx-padding: 6 16;
+}
+
+.tab-pane .tab-header-area .tab:selected {
+    -fx-background-color: white;
+}
+
+.tab-pane .tab-header-area .tab .tab-label {
+    -fx-text-fill: #455a64;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.tab-pane .tab-header-area .tab:selected .tab-label {
+    -fx-text-fill: #1a6b72;
+}

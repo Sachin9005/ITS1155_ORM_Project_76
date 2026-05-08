@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="16"
+      fx:controller="lk.ijse.serenity.controller.PatientPanelController">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <VBox HBox.hgrow="ALWAYS">
+            <Label text="Patient Management" styleClass="page-title"/>
+            <Label text="Add, update, search and view patient records" styleClass="page-subtitle"/>
+        </VBox>
+        <Button text="+ Add Patient" styleClass="btn-primary" onAction="#openAddDialog"/>
+    </HBox>
+
+    <!-- Search Bar -->
+    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="card" style="-fx-padding:12 16;">
+        <Label text="🔍" style="-fx-font-size:16px;"/>
+        <TextField fx:id="searchField" promptText="Search by name, email or phone..."
+                   HBox.hgrow="ALWAYS" onKeyReleased="#handleSearch"/>
+        <Button text="Clear" styleClass="btn-secondary,btn-small" onAction="#clearSearch"/>
+        <Label fx:id="countLabel" styleClass="page-subtitle"/>
+    </HBox>
+
+    <!-- Table -->
+    <VBox styleClass="card" VBox.vgrow="ALWAYS" spacing="12">
+        <TableView fx:id="patientTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+                <TableColumn fx:id="colName" text="Name" prefWidth="160"/>
+                <TableColumn fx:id="colEmail" text="Email" prefWidth="190"/>
+                <TableColumn fx:id="colPhone" text="Phone" prefWidth="130"/>
+                <TableColumn fx:id="colDob" text="Date of Birth" prefWidth="110"/>
+                <TableColumn fx:id="colRegDate" text="Registered" prefWidth="110"/>
+                <TableColumn fx:id="colActions" text="Actions" prefWidth="200"/>
+            </columns>
+            <placeholder>
+                <Label text="No patients found. Click '+ Add Patient' to register one."/>
+            </placeholder>
+        </TableView>
+    </VBox>
+
+    <!-- Add / Edit Form Dialog (hidden by default) -->
+    <VBox fx:id="formCard" styleClass="card" spacing="14" managed="false" visible="false">
+        <HBox alignment="CENTER_LEFT">
+            <Label fx:id="formTitle" text="Add New Patient"
+                   style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#1a3a3c;" HBox.hgrow="ALWAYS"/>
+            <Button text="✕" styleClass="btn-secondary,btn-small" onAction="#closeForm"/>
+        </HBox>
+        <Separator/>
+        <GridPane hgap="16" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50"/>
+                <ColumnConstraints percentWidth="50"/>
+            </columnConstraints>
+            <!-- Row 0 -->
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="Full Name *" styleClass="form-label"/>
+                <TextField fx:id="fName" promptText="e.g. Kasun Perera"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="Email *" styleClass="form-label"/>
+                <TextField fx:id="fEmail" promptText="user@example.com" onKeyReleased="#validateEmail"/>
+            </VBox>
+            <!-- Row 1 -->
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label text="Phone * (0XXXXXXXXX)" styleClass="form-label"/>
+                <TextField fx:id="fPhone" promptText="0771234567" onKeyReleased="#validatePhone"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Label text="Date of Birth" styleClass="form-label"/>
+                <DatePicker fx:id="fDob" prefWidth="999"/>
+            </VBox>
+            <!-- Row 2 -->
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                <Label text="Address" styleClass="form-label"/>
+                <TextField fx:id="fAddress" promptText="No 12, Main St, Colombo"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <Label text="Emergency Contact" styleClass="form-label"/>
+                <TextField fx:id="fEmergency" promptText="Name / Phone"/>
+            </VBox>
+            <!-- Row 3 -->
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2">
+                <Label text="Medical History" styleClass="form-label"/>
+                <TextArea fx:id="fMedical" prefRowCount="3" wrapText="true"
+                          promptText="Relevant medical history, allergies, conditions..."/>
+            </VBox>
+        </GridPane>
+        <Label fx:id="formError" styleClass="error-label" wrapText="true"/>
+        <HBox spacing="10">
+            <Button text="Save Patient" styleClass="btn-primary" onAction="#savePatient"/>
+            <Button text="Cancel" styleClass="btn-secondary" onAction="#closeForm"/>
+        </HBox>
+    </VBox>
+
+</VBox>

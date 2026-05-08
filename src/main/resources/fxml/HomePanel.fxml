@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<ScrollPane xmlns:fx="http://javafx.com/fxml" fitToWidth="true"
+            fx:controller="lk.ijse.serenity.controller.HomePanelController"
+            style="-fx-background-color:transparent;">
+    <VBox spacing="20" style="-fx-padding:0 0 20 0;">
+
+        <!-- Header -->
+        <VBox spacing="4">
+            <Label text="Dashboard" styleClass="page-title"/>
+            <Label fx:id="welcomeLabel" styleClass="page-subtitle"/>
+        </VBox>
+
+        <!-- Stat Cards Row -->
+        <HBox spacing="16">
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="Total Patients" styleClass="stat-label"/>
+                <Label fx:id="statPatients" text="0" styleClass="stat-number"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="Therapists" styleClass="stat-label"/>
+                <Label fx:id="statTherapists" text="0" styleClass="stat-number"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="Sessions Today" styleClass="stat-label"/>
+                <Label fx:id="statSessions" text="0" styleClass="stat-number"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="Revenue (LKR)" styleClass="stat-label"/>
+                <Label fx:id="statRevenue" text="0" styleClass="stat-number" style="-fx-font-size:20px;"/>
+            </VBox>
+        </HBox>
+
+        <!-- Recent Sessions + Programs -->
+        <HBox spacing="16" VBox.vgrow="ALWAYS">
+
+            <!-- Recent Sessions -->
+            <VBox styleClass="card" spacing="12" HBox.hgrow="ALWAYS">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="📅  Recent Sessions" style="-fx-font-weight:bold;-fx-font-size:14px;"/>
+                </HBox>
+                <TableView fx:id="recentSessionsTable" prefHeight="280">
+                    <columns>
+                        <TableColumn fx:id="colSPatient" text="Patient" prefWidth="140"/>
+                        <TableColumn fx:id="colSTherapist" text="Therapist" prefWidth="130"/>
+                        <TableColumn fx:id="colSProgram" text="Program" prefWidth="150"/>
+                        <TableColumn fx:id="colSDate" text="Date" prefWidth="130"/>
+                        <TableColumn fx:id="colSStatus" text="Status" prefWidth="100"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- Programs -->
+            <VBox styleClass="card" spacing="12" prefWidth="280">
+                <Label text="📋  Therapy Programs" style="-fx-font-weight:bold;-fx-font-size:14px;"/>
+                <VBox fx:id="programsList" spacing="8"/>
+            </VBox>
+        </HBox>
+
+        <!-- Patients enrolled in ALL programs -->
+        <VBox styleClass="card" spacing="12">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="🏆  Patients Enrolled in All Programs (HQL Division Query)"
+                       style="-fx-font-weight:bold;-fx-font-size:14px;"/>
+            </HBox>
+            <Label fx:id="divisionQueryLabel" styleClass="page-subtitle"
+                   text="Patients who have sessions across every available therapy program:"/>
+            <TableView fx:id="allProgramsTable" prefHeight="160">
+                <columns>
+                    <TableColumn fx:id="colApName" text="Patient Name" prefWidth="200"/>
+                    <TableColumn fx:id="colApEmail" text="Email" prefWidth="200"/>
+                    <TableColumn fx:id="colApPhone" text="Phone" prefWidth="150"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

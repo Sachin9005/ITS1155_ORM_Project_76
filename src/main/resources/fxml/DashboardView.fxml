@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="lk.ijse.serenity.controller.DashboardController"
+            prefWidth="1200" prefHeight="750">
+
+    <!-- ── Sidebar ── -->
+    <left>
+        <VBox styleClass="sidebar" spacing="0">
+
+            <!-- Branding -->
+            <VBox style="-fx-padding:24 16 16 16;" spacing="2">
+                <Label text="🧠 Serenity" styleClass="sidebar-title"/>
+                <Label text="Therapy Management" styleClass="sidebar-subtitle"/>
+            </VBox>
+
+            <Separator style="-fx-opacity:0.3;"/>
+
+            <!-- Navigation -->
+            <ScrollPane fitToWidth="true" style="-fx-background-color:transparent;-fx-padding:8 0;" VBox.vgrow="ALWAYS">
+                <VBox spacing="2" style="-fx-padding:8 12;">
+
+                    <Label text="OVERVIEW" styleClass="nav-section"/>
+                    <Button fx:id="navDashboard" text="📊  Dashboard" styleClass="nav-btn,nav-btn-active"
+                            onAction="#showDashboardPanel"/>
+
+                    <Label text="MANAGEMENT" styleClass="nav-section"/>
+                    <Button fx:id="navPatients" text="👤  Patients" styleClass="nav-btn" onAction="#showPatients"/>
+                    <Button fx:id="navTherapists" text="🩺  Therapists" styleClass="nav-btn" onAction="#showTherapists"/>
+                    <Button fx:id="navPrograms" text="📋  Therapy Programs" styleClass="nav-btn"
+                            onAction="#showPrograms"/>
+
+                    <Label text="OPERATIONS" styleClass="nav-section"/>
+                    <Button fx:id="navSessions" text="📅  Sessions" styleClass="nav-btn" onAction="#showSessions"/>
+                    <Button fx:id="navPayments" text="💳  Payments" styleClass="nav-btn" onAction="#showPayments"/>
+
+                    <Label fx:id="navAdminSection" text="ADMIN" styleClass="nav-section"/>
+                    <Button fx:id="navReports" text="📈  Reports" styleClass="nav-btn" onAction="#showReports"/>
+                    <Button fx:id="navUsers" text="🔐  Users" styleClass="nav-btn" onAction="#showUsers"/>
+
+                    <Label text="ACCOUNT" styleClass="nav-section"/>
+                    <Button fx:id="navSettings" text="⚙  My Account" styleClass="nav-btn" onAction="#showSettings"/>
+
+                </VBox>
+            </ScrollPane>
+
+            <!-- User Footer -->
+            <VBox styleClass="sidebar-footer" spacing="2">
+                <Label fx:id="footerName" styleClass="user-name-lbl" text="User"/>
+                <Label fx:id="footerRole" styleClass="user-role-lbl" text="Role"/>
+                <Button text="Sign Out" onAction="#handleLogout"
+                        style="-fx-background-color:rgba(255,255,255,0.15);-fx-text-fill:white;
+                               -fx-background-radius:6;-fx-padding:4 10;-fx-cursor:hand;
+                               -fx-font-size:11px;-fx-margin-top:6;"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- ── Content ── -->
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-area"/>
+    </center>
+</BorderPane>

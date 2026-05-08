@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="16"
+      fx:controller="lk.ijse.serenity.controller.SessionPanelController">
+
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <VBox HBox.hgrow="ALWAYS">
+            <Label text="Therapy Sessions" styleClass="page-title"/>
+            <Label text="Schedule, reschedule and manage therapy appointments" styleClass="page-subtitle"/>
+        </VBox>
+        <Button text="+ Book Session" styleClass="btn-primary" onAction="#openBookDialog"/>
+    </HBox>
+
+    <!-- Filter Row -->
+    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="card" style="-fx-padding:10 16;">
+        <Label text="Filter by Status:" style="-fx-font-weight:bold;-fx-font-size:12px;"/>
+        <ComboBox fx:id="statusFilter" prefWidth="150" onAction="#applyFilter"/>
+        <Label text="  Patient:" style="-fx-font-weight:bold;-fx-font-size:12px;"/>
+        <TextField fx:id="patientFilter" promptText="Type patient name..." prefWidth="180"
+                   onKeyReleased="#applyFilter"/>
+        <Button text="Clear" styleClass="btn-secondary,btn-small" onAction="#clearFilter"/>
+        <Label fx:id="countLabel" styleClass="page-subtitle" HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!-- Sessions Table -->
+    <VBox styleClass="card" VBox.vgrow="ALWAYS">
+        <TableView fx:id="sessionTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+                <TableColumn fx:id="colPatient" text="Patient" prefWidth="140"/>
+                <TableColumn fx:id="colTherapist" text="Therapist" prefWidth="140"/>
+                <TableColumn fx:id="colProgram" text="Program" prefWidth="170"/>
+                <TableColumn fx:id="colDate" text="Date &amp; Time" prefWidth="140"/>
+                <TableColumn fx:id="colStatus" text="Status" prefWidth="100"/>
+                <TableColumn fx:id="colActions" text="Actions" prefWidth="230"/>
+            </columns>
+            <placeholder>
+                <Label text="No sessions found."/>
+            </placeholder>
+        </TableView>
+    </VBox>
+
+    <!-- Book / Edit Form -->
+    <VBox fx:id="formCard" styleClass="card" spacing="14" managed="false" visible="false">
+        <HBox alignment="CENTER_LEFT">
+            <Label fx:id="formTitle" text="Book New Session"
+                   style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#1a3a3c;" HBox.hgrow="ALWAYS"/>
+            <Button text="✕" styleClass="btn-secondary,btn-small" onAction="#closeForm"/>
+        </HBox>
+        <Separator/>
+        <GridPane hgap="16" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50"/>
+                <ColumnConstraints percentWidth="50"/>
+            </columnConstraints>
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="Patient *" styleClass="form-label"/>
+                <ComboBox fx:id="fPatient" prefWidth="999" promptText="Select patient"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="Therapy Program *" styleClass="form-label"/>
+                <ComboBox fx:id="fProgram" prefWidth="999" promptText="Select program"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label text="Therapist *" styleClass="form-label"/>
+                <ComboBox fx:id="fTherapist" prefWidth="999" promptText="Select therapist"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Label text="Session Date *" styleClass="form-label"/>
+                <DatePicker fx:id="fDate" prefWidth="999"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                <Label text="Time (HH:MM) *" styleClass="form-label"/>
+                <TextField fx:id="fTime" promptText="09:00"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <Label text="Notes" styleClass="form-label"/>
+                <TextField fx:id="fNotes" promptText="Any notes for this session..."/>
+            </VBox>
+        </GridPane>
+        <Label fx:id="formError" styleClass="error-label" wrapText="true"/>
+        <HBox spacing="10">
+            <Button text="Book Session" styleClass="btn-primary" onAction="#saveSession"/>
+            <Button text="Cancel" styleClass="btn-secondary" onAction="#closeForm"/>
+        </HBox>
+    </VBox>
+</VBox>

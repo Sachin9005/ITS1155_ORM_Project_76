@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="lk.ijse.serenity.controller.LoginController"
+           styleClass="login-root"
+           prefWidth="440" prefHeight="580">
+
+    <VBox alignment="CENTER" spacing="0">
+        <VBox styleClass="login-card" spacing="0" maxWidth="360" alignment="CENTER">
+
+            <!-- Logo / Title -->
+            <VBox alignment="CENTER" spacing="6">
+                <Label text="🧠" style="-fx-font-size:48px;"/>
+                <Label text="Serenity" styleClass="login-title"/>
+                <Label text="Mental Health Therapy Center" styleClass="login-subtitle"/>
+            </VBox>
+
+            <Separator style="-fx-padding:16 0;"/>
+            <VBox spacing="4" style="-fx-padding:16 0 0 0;">
+                <Label text="Sign in to your account"
+                       style="-fx-font-size:14px;-fx-font-weight:bold;-fx-text-fill:#1a3a3c;"/>
+            </VBox>
+
+            <!-- Username -->
+            <VBox spacing="4" style="-fx-padding:18 0 0 0;">
+                <Label text="Username" styleClass="login-label"/>
+                <TextField fx:id="usernameField" promptText="Enter username" prefWidth="264"/>
+            </VBox>
+
+            <!-- Password with show/hide toggle -->
+            <VBox spacing="4" style="-fx-padding:14 0 0 0;">
+                <Label text="Password" styleClass="login-label"/>
+                <StackPane>
+                    <PasswordField fx:id="passwordField" promptText="Enter password" prefWidth="264"/>
+                    <TextField fx:id="passwordVisible" promptText="Enter password"
+                               prefWidth="264" visible="false" managed="false"/>
+                    <Button fx:id="togglePasswordBtn" text="👁" onAction="#togglePasswordVisibility"
+                            style="-fx-background-color:transparent;-fx-cursor:hand;-fx-font-size:14px;-fx-padding:0 10 0 0;"
+                            StackPane.alignment="CENTER_RIGHT"/>
+                </StackPane>
+            </VBox>
+
+            <!-- Error message -->
+            <Label fx:id="errorLabel" styleClass="error-label"
+                   style="-fx-padding:10 0 0 0;" wrapText="true" maxWidth="264"/>
+
+            <!-- Login Button -->
+            <Button fx:id="loginBtn" text="Sign In" onAction="#handleLogin"
+                    styleClass="btn-primary" prefWidth="264"
+                    style="-fx-padding:12;-fx-font-size:14px;-fx-padding-top:18;"/>
+            <VBox style="-fx-padding:18 0 0 0;"/>
+
+            <!-- Footer -->
+            <Label text="Default admin: admin / Admin@123" styleClass="login-subtitle"
+                   style="-fx-padding:8 0 0 0;"/>
+            <Label text="Default receptionist: receptionist / Recep@123" styleClass="login-subtitle"/>
+
+        </VBox>
+    </VBox>
+</StackPane>

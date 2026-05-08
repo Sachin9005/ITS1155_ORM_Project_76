@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="20"
+      fx:controller="lk.ijse.serenity.controller.SettingsPanelController"
+      maxWidth="600">
+
+    <VBox spacing="4">
+        <Label text="My Account" styleClass="page-title"/>
+        <Label text="Update your login credentials" styleClass="page-subtitle"/>
+    </VBox>
+
+    <!-- Profile Info -->
+    <VBox styleClass="card" spacing="12">
+        <Label text="👤  Profile Information" style="-fx-font-weight:bold;-fx-font-size:14px;-fx-text-fill:#1a3a3c;"/>
+        <Separator/>
+        <GridPane hgap="20" vgap="8">
+            <columnConstraints>
+                <ColumnConstraints minWidth="120"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+            <Label text="Full Name:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Label fx:id="lblName" GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-font-size:13px;"/>
+            <Label text="Role:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Label fx:id="lblRole" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-font-size:13px;"/>
+            <Label text="Email:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Label fx:id="lblEmail" GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-font-size:13px;"/>
+        </GridPane>
+    </VBox>
+
+    <!-- Change Username -->
+    <VBox styleClass="card" spacing="14">
+        <Label text="🔑  Change Username" style="-fx-font-weight:bold;-fx-font-size:14px;-fx-text-fill:#1a3a3c;"/>
+        <Separator/>
+        <VBox spacing="4">
+            <Label text="Current Username" styleClass="form-label"/>
+            <Label fx:id="lblCurrentUsername" style="-fx-font-size:13px;-fx-text-fill:#455a64;"/>
+        </VBox>
+        <VBox spacing="4">
+            <Label text="New Username (4-30 chars, letters/digits/underscore)" styleClass="form-label"/>
+            <TextField fx:id="fNewUsername" promptText="Enter new username" maxWidth="360"/>
+        </VBox>
+        <Label fx:id="usernameError" styleClass="error-label"/>
+        <Button text="Update Username" styleClass="btn-primary" onAction="#changeUsername" maxWidth="180"/>
+    </VBox>
+
+    <!-- Change Password -->
+    <VBox styleClass="card" spacing="14">
+        <Label text="🔒  Change Password" style="-fx-font-weight:bold;-fx-font-size:14px;-fx-text-fill:#1a3a3c;"/>
+        <Separator/>
+        <VBox spacing="4">
+            <Label text="Current Password" styleClass="form-label"/>
+            <StackPane maxWidth="360">
+                <PasswordField fx:id="fOldPass" promptText="Enter current password"/>
+                <TextField fx:id="fOldPassVisible" promptText="Enter current password" visible="false" managed="false"/>
+                <Button fx:id="toggleOld" text="👁" onAction="#toggleOldPass"
+                        style="-fx-background-color:transparent;-fx-cursor:hand;-fx-font-size:13px;-fx-padding:0 8 0 0;"
+                        StackPane.alignment="CENTER_RIGHT"/>
+            </StackPane>
+        </VBox>
+        <VBox spacing="4">
+            <Label text="New Password (min 8 chars, at least 1 letter + 1 digit)" styleClass="form-label"/>
+            <StackPane maxWidth="360">
+                <PasswordField fx:id="fNewPass" promptText="Enter new password"/>
+                <TextField fx:id="fNewPassVisible" promptText="Enter new password" visible="false" managed="false"/>
+                <Button fx:id="toggleNew" text="👁" onAction="#toggleNewPass"
+                        style="-fx-background-color:transparent;-fx-cursor:hand;-fx-font-size:13px;-fx-padding:0 8 0 0;"
+                        StackPane.alignment="CENTER_RIGHT"/>
+            </StackPane>
+        </VBox>
+        <VBox spacing="4">
+            <Label text="Confirm New Password" styleClass="form-label"/>
+            <PasswordField fx:id="fConfirmPass" promptText="Repeat new password" maxWidth="360"/>
+        </VBox>
+        <Label fx:id="passwordError" styleClass="error-label"/>
+        <Button text="Update Password" styleClass="btn-primary" onAction="#changePassword" maxWidth="180"/>
+    </VBox>
+
+</VBox>

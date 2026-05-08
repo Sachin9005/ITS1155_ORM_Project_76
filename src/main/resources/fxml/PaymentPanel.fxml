@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="16"
+      fx:controller="lk.ijse.serenity.controller.PaymentPanelController">
+
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <VBox HBox.hgrow="ALWAYS">
+            <Label text="Payment &amp; Invoices" styleClass="page-title"/>
+            <Label text="Process payments and manage invoices" styleClass="page-subtitle"/>
+        </VBox>
+        <Button text="+ New Payment" styleClass="btn-primary" onAction="#openPaymentDialog"/>
+    </HBox>
+
+    <!-- Summary Cards -->
+    <HBox spacing="16">
+        <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Total Revenue (LKR)" styleClass="stat-label"/>
+            <Label fx:id="lblRevenue" text="0.00" styleClass="stat-number" style="-fx-font-size:20px;"/>
+        </VBox>
+        <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Total Payments" styleClass="stat-label"/>
+            <Label fx:id="lblCount" text="0" styleClass="stat-number"/>
+        </VBox>
+        <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Pending Payments" styleClass="stat-label"/>
+            <Label fx:id="lblPending" text="0" styleClass="stat-number" style="-fx-text-fill:#e67e22;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Table -->
+    <VBox styleClass="card" VBox.vgrow="ALWAYS">
+        <TableView fx:id="paymentTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colInvoice" text="Invoice #" prefWidth="110"/>
+                <TableColumn fx:id="colPatient" text="Patient" prefWidth="160"/>
+                <TableColumn fx:id="colAmount" text="Amount (LKR)" prefWidth="130"/>
+                <TableColumn fx:id="colMethod" text="Method" prefWidth="110"/>
+                <TableColumn fx:id="colDate" text="Date" prefWidth="110"/>
+                <TableColumn fx:id="colStatus" text="Status" prefWidth="100"/>
+                <TableColumn fx:id="colActions" text="Actions" prefWidth="130"/>
+            </columns>
+            <placeholder>
+                <Label text="No payments recorded yet."/>
+            </placeholder>
+        </TableView>
+    </VBox>
+
+    <!-- Payment Form -->
+    <VBox fx:id="formCard" styleClass="card" spacing="14" managed="false" visible="false">
+        <HBox alignment="CENTER_LEFT">
+            <Label text="Process New Payment"
+                   style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#1a3a3c;" HBox.hgrow="ALWAYS"/>
+            <Button text="✕" styleClass="btn-secondary,btn-small" onAction="#closeForm"/>
+        </HBox>
+        <Separator/>
+        <GridPane hgap="16" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50"/>
+                <ColumnConstraints percentWidth="50"/>
+            </columnConstraints>
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="Patient *" styleClass="form-label"/>
+                <ComboBox fx:id="fPatient" prefWidth="999" promptText="Select patient"
+                          onAction="#loadPatientSessions"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="Session *" styleClass="form-label"/>
+                <ComboBox fx:id="fSession" prefWidth="999" promptText="Select session"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label text="Amount (LKR) *" styleClass="form-label"/>
+                <TextField fx:id="fAmount" promptText="e.g. 80000.00"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Label text="Payment Method *" styleClass="form-label"/>
+                <ComboBox fx:id="fMethod" prefWidth="999"/>
+            </VBox>
+        </GridPane>
+        <Label fx:id="formError" styleClass="error-label" wrapText="true"/>
+        <HBox spacing="10">
+            <Button text="Process Payment" styleClass="btn-primary" onAction="#processPayment"/>
+            <Button text="Cancel" styleClass="btn-secondary" onAction="#closeForm"/>
+        </HBox>
+    </VBox>
+</VBox>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="16"
+      fx:controller="lk.ijse.serenity.controller.ProgramPanelController">
+
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <VBox HBox.hgrow="ALWAYS">
+            <Label text="Therapy Programs" styleClass="page-title"/>
+            <Label text="Create and manage therapy programs offered at Serenity" styleClass="page-subtitle"/>
+        </VBox>
+        <Button text="+ Add Program" styleClass="btn-primary" onAction="#openAddDialog"/>
+    </HBox>
+
+    <VBox styleClass="card" VBox.vgrow="ALWAYS" spacing="12">
+        <TableView fx:id="programTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colPid" text="Program ID" prefWidth="100"/>
+                <TableColumn fx:id="colName" text="Name" prefWidth="220"/>
+                <TableColumn fx:id="colDuration" text="Duration" prefWidth="100"/>
+                <TableColumn fx:id="colFee" text="Fee (LKR)" prefWidth="110"/>
+                <TableColumn fx:id="colDesc" text="Description" prefWidth="200"/>
+                <TableColumn fx:id="colActions" text="Actions" prefWidth="170"/>
+            </columns>
+            <placeholder>
+                <Label text="No programs found. Click '+ Add Program' to create one."/>
+            </placeholder>
+        </TableView>
+    </VBox>
+
+    <!-- Form -->
+    <VBox fx:id="formCard" styleClass="card" spacing="14" managed="false" visible="false">
+        <HBox alignment="CENTER_LEFT">
+            <Label fx:id="formTitle" text="Add Program"
+                   style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#1a3a3c;" HBox.hgrow="ALWAYS"/>
+            <Button text="✕" styleClass="btn-secondary,btn-small" onAction="#closeForm"/>
+        </HBox>
+        <Separator/>
+        <GridPane hgap="16" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="33"/>
+                <ColumnConstraints percentWidth="33"/>
+                <ColumnConstraints percentWidth="34"/>
+            </columnConstraints>
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="Program ID * (e.g. MT1001)" styleClass="form-label"/>
+                <TextField fx:id="fPid" promptText="MT1006"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="Program Name *" styleClass="form-label"/>
+                <TextField fx:id="fName" promptText="e.g. Art Therapy"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                <Label text="Duration" styleClass="form-label"/>
+                <TextField fx:id="fDuration" promptText="e.g. 8 weeks"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label text="Fee (LKR) *" styleClass="form-label"/>
+                <TextField fx:id="fFee" promptText="e.g. 75000"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="2">
+                <Label text="Description" styleClass="form-label"/>
+                <TextField fx:id="fDesc" promptText="Short description of the program"/>
+            </VBox>
+        </GridPane>
+        <Label fx:id="formError" styleClass="error-label" wrapText="true"/>
+        <HBox spacing="10">
+            <Button text="Save Program" styleClass="btn-primary" onAction="#saveProgram"/>
+            <Button text="Cancel" styleClass="btn-secondary" onAction="#closeForm"/>
+        </HBox>
+    </VBox>
+</VBox>

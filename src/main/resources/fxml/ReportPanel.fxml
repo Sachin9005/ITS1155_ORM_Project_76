@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<ScrollPane xmlns:fx="http://javafx.com/fxml" fitToWidth="true"
+            fx:controller="lk.ijse.serenity.controller.ReportPanelController"
+            style="-fx-background-color:transparent;">
+    <VBox spacing="20" style="-fx-padding:0 0 20 0;">
+
+        <VBox spacing="4">
+            <Label text="Reports &amp; Analytics" styleClass="page-title"/>
+            <Label text="Session statistics, therapist performance and financial summary" styleClass="page-subtitle"/>
+        </VBox>
+
+        <!-- KPI Row -->
+        <HBox spacing="16">
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="Total Sessions" styleClass="stat-label"/>
+                <Label fx:id="kpiSessions" text="0" styleClass="stat-number"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="Completed" styleClass="stat-label"/>
+                <Label fx:id="kpiCompleted" text="0" styleClass="stat-number" style="-fx-text-fill:#27ae60;"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="Cancelled" styleClass="stat-label"/>
+                <Label fx:id="kpiCancelled" text="0" styleClass="stat-number" style="-fx-text-fill:#e74c3c;"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="Total Revenue (LKR)" styleClass="stat-label"/>
+                <Label fx:id="kpiRevenue" text="0" styleClass="stat-number" style="-fx-font-size:18px;"/>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="16">
+            <!-- Therapist Performance -->
+            <VBox styleClass="card" spacing="12" HBox.hgrow="ALWAYS">
+                <Label text="🩺  Therapist Performance" style="-fx-font-weight:bold;-fx-font-size:14px;"/>
+                <TableView fx:id="therapistTable" prefHeight="260">
+                    <columns>
+                        <TableColumn fx:id="colTName" text="Therapist" prefWidth="160"/>
+                        <TableColumn fx:id="colTSpec" text="Specialization" prefWidth="160"/>
+                        <TableColumn fx:id="colTTotal" text="Total Sessions" prefWidth="110"/>
+                        <TableColumn fx:id="colTDone" text="Completed" prefWidth="90"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- Program Enrollment -->
+            <VBox styleClass="card" spacing="12" prefWidth="300">
+                <Label text="📋  Program Enrollment" style="-fx-font-weight:bold;-fx-font-size:14px;"/>
+                <VBox fx:id="programStats" spacing="8"/>
+            </VBox>
+        </HBox>
+
+        <!-- Patient History Read-Only -->
+        <VBox styleClass="card" spacing="12">
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <Label text="📄  Patient Therapy History (Read-Only)"
+                       style="-fx-font-weight:bold;-fx-font-size:14px;" HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="searchPatient" promptText="Search patient..." prefWidth="220"
+                           onKeyReleased="#filterHistory"/>
+            </HBox>
+            <TableView fx:id="historyTable" prefHeight="220">
+                <columns>
+                    <TableColumn fx:id="colHPatient" text="Patient" prefWidth="150"/>
+                    <TableColumn fx:id="colHProgram" text="Program" prefWidth="180"/>
+                    <TableColumn fx:id="colHTherapist" text="Therapist" prefWidth="150"/>
+                    <TableColumn fx:id="colHDate" text="Date" prefWidth="130"/>
+                    <TableColumn fx:id="colHStatus" text="Status" prefWidth="100"/>
+                </columns>
+                <placeholder>
+                    <Label text="No history records found."/>
+                </placeholder>
+            </TableView>
+        </VBox>
+
+    </VBox>
+</ScrollPane>
