@@ -1,5 +1,6 @@
 package lk.ijse.serenity.config;
 
+import lk.ijse.serenity.dao.CrudDAO;
 import lk.ijse.serenity.entity.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -19,7 +20,7 @@ public class FactoryConfiguration {
         return factoryConfiguration == null ? factoryConfiguration = new FactoryConfiguration() : factoryConfiguration;
     }
 
-    public Session getSession(){
+    public static Session getSession(){
         //1st level cashing
         Session session = sessionFactory.openSession();
         return session;

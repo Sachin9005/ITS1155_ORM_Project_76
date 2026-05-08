@@ -8,8 +8,12 @@ module lk.ijse.serenity {
     requires net.synedra.validatorfx;
     requires org.kordamp.ikonli.javafx;
     requires eu.hansolo.tilesfx;
+
     requires org.hibernate.orm.core;
     requires jbcrypt;
+    requires jakarta.persistence;
+    requires java.sql;
+    requires java.naming;
 
     opens lk.ijse.serenity to javafx.fxml;
     exports lk.ijse.serenity;

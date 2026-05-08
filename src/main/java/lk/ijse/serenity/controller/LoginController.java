@@ -4,6 +4,7 @@ package lk.ijse.serenity.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import lk.ijse.serenity.MainApp;
+import lk.ijse.serenity.bo.UserBOImpl;
 
 public class LoginController {
 
@@ -19,6 +20,8 @@ public class LoginController {
     private Label errorLabel;
     @FXML
     private Button loginBtn;
+
+    UserBOImpl userBOImpl = new UserBOImpl();
 
     private boolean passwordShown = false;
 
@@ -53,16 +56,16 @@ public class LoginController {
         String password = passwordField.getText();
 
         try {
-            UserBO.getInstance().login(username, password);
+            userBOImpl.login(username, password);
             MainApp.showDashboard();
-        } catch (Exception e) {
-            errorLabel.setText("❌ ");
-            passwordField.clear();
-            passwordVisible.clear();
-            usernameField.requestFocus();
-        } catch (SerenityException e) {
-            errorLabel.setText("❌ " + e.getMessage());
-        } catch (Exception e) {
+        }
+//        catch (Exception e) {
+//            errorLabel.setText("❌ Invalid username or password. Please try again.");
+//            passwordField.clear();
+//            passwordVisible.clear();
+//            usernameField.requestFocus();
+//        }
+        catch (Exception e) {
             errorLabel.setText("❌ Connection error. Check database settings.");
             e.printStackTrace();
         }
