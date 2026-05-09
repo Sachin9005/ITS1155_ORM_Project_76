@@ -14,6 +14,7 @@ module lk.ijse.serenity {
     requires jakarta.persistence;
     requires java.sql;
     requires java.naming;
+    requires static lombok;
 
     opens lk.ijse.serenity to javafx.fxml;
     exports lk.ijse.serenity;
