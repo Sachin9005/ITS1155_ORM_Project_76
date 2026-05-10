@@ -56,7 +56,7 @@ public class LoginController {
         String password = passwordField.getText();
 
         try {
-            userBOImpl.login(username, password);
+            Boolean ok = userBOImpl.login(username, password);
             MainApp.showDashboard();
         }
 //        catch (Exception e) {
