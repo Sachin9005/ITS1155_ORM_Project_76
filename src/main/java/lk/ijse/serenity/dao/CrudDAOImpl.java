@@ -8,17 +8,17 @@ import java.util.List;
 
 public class CrudDAOImpl<T> {
 
-    public T save(T entity) {
+    public boolean save(T entity) {
         Session session = FactoryConfiguration.getInstance().getSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
             session.save(entity);
             transaction.commit();
-            return  entity;
+            return  true;
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            throw new RuntimeException(e);
+            return  false;
         }finally {
             session.close();
         }
@@ -34,7 +34,7 @@ public class CrudDAOImpl<T> {
             return true;
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            throw new RuntimeException(e);
+            return false;
         }finally {
             session.close();
         }
@@ -49,7 +49,7 @@ public class CrudDAOImpl<T> {
             return true;
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            throw new RuntimeException(e);
+            return  false;
         }finally {
             session.close();
         }

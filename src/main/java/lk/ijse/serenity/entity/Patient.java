@@ -40,9 +40,6 @@ public class Patient {
     @Column(name = "registration_date")
     private LocalDate registrationDate;
 
-    @Column(name = "medical_history", length = 1000)
-    private String medicalHistory;
-
     @Column(name = "emergency_contact", length = 100)
     private String emergencyContact;
 
