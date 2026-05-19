@@ -4,12 +4,12 @@ import lombok.*;
 
 import java.time.LocalDate;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
+@Builder
 
 public class PatientDTO {
     private String name;

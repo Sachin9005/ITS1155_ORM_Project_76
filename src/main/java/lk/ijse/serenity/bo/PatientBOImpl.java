@@ -5,6 +5,7 @@ import lk.ijse.serenity.dto.PatientDTO;
 import lk.ijse.serenity.entity.Patient;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class PatientBOImpl {
     private PatientDAOImpl patientDAO = new PatientDAOImpl();
@@ -49,5 +50,17 @@ public class PatientBOImpl {
                 emergencyContact(patientDTO.getEmergencyContact()).
                 build();
         return patientDAO.delete(patient);
+    }
+
+    public List<PatientDTO> getAllPatients() {
+        List<Patient> patients = patientDAO.getAll();
+        return patients.stream().map(p -> PatientDTO.builder()
+                .name(p.getName())
+                .email(p.getEmail())
+                .phone(p.getPhone())
+                .address(p.getAddress())
+                .dob(p.getDateOfBirth())
+                .emergencyContact(p.getEmergencyContact())
+                .build()).toList();
     }
 }
