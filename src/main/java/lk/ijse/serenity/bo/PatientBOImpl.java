@@ -5,6 +5,7 @@ import lk.ijse.serenity.dto.PatientDTO;
 import lk.ijse.serenity.entity.Patient;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PatientBOImpl {
@@ -63,4 +64,24 @@ public class PatientBOImpl {
                 .emergencyContact(p.getEmergencyContact())
                 .build()).toList();
     }
+
+    public List<PatientDTO> findPatientsEnrolledInAllPrograms() {
+        List<Patient> patients = patientDAO.findPatientsEnrolledInAllPrograms();
+
+        List<PatientDTO> patientDTOList = new ArrayList<>();
+        for (Patient patient : patients) {
+            patientDTOList.add(PatientDTO.builder()
+                    .name(patient.getName())
+                    .email(patient.getEmail())
+                    .phone(patient.getPhone())
+                    .address(patient.getAddress())
+                    .dob(patient.getDateOfBirth())
+                    .emergencyContact(patient.getEmergencyContact())
+                    .build());
+        }
+        return patientDTOList;
+
+
+    }
+
 }

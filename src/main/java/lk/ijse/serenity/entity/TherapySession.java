@@ -40,9 +40,6 @@ public class TherapySession {
     @Column(name = "status", nullable = false)
     private Status status;
 
-    @Column(name = "notes", length = 500)
-    private String notes;
-
     @OneToOne(mappedBy = "therapySession", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Payment payment;
 

@@ -1,12 +1,16 @@
 package lk.ijse.serenity.controller;
 
-import com.serenity.entity.*;
-import com.serenity.bo.*;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import lk.ijse.serenity.bo.*;
+import lk.ijse.serenity.dto.PatientDTO;
+import lk.ijse.serenity.dto.TherapyProgramDTO;
+import lk.ijse.serenity.dto.TherapySessionDTO;
+import lk.ijse.serenity.entity.Patient;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,29 +19,30 @@ import java.util.List;
 
 public class HomePanelController {
 
-    private final PatientBO patientSvc = PatientBO.getInstance();
-    private final TherapistBO therapistSvc = TherapistBO.getInstance();
-    private final TherapySessionBO sessSvc = TherapySessionBO.getInstance();
-    private final PaymentBO paymentSvc = PaymentBO.getInstance();
-    private final TherapyProgramBO progSvc = TherapyProgramBO.getInstance();
+    private final PatientBOImpl patientSvc = new PatientBOImpl();
+    private final TherapistBOImpl therapistSvc = new TherapistBOImpl();
+    private final TherapySessionBOImpl sessSvc = new TherapySessionBOImpl();
+    private final PaymentBOImpl paymentSvc = new PaymentBOImpl();
+    private final TherapyProgramBOImpl progSvc = new TherapyProgramBOImpl();
+    private final UserBOImpl userSvc = new UserBOImpl();
     @FXML
     private Label welcomeLabel;
     @FXML
     private Label statPatients, statTherapists, statSessions, statRevenue;
     @FXML
-    private TableView<TherapySession> recentSessionsTable;
+    private TableView<TherapySessionDTO> recentSessionsTable;
     @FXML
-    private TableColumn<TherapySession, String> colSPatient, colSTherapist, colSProgram, colSDate, colSStatus;
+    private TableColumn<TherapySessionDTO, String> colSPatient, colSTherapist, colSProgram, colSDate, colSStatus;
     @FXML
     private VBox programsList;
     @FXML
-    private TableView<Patient> allProgramsTable;
+    private TableView<PatientDTO> allProgramsTable;
     @FXML
     private TableColumn<Patient, String> colApName, colApEmail, colApPhone;
 
     @FXML
     public void initialize() {
-        String user = UserBO.getInstance().getCurrentUser().getFullName();
+        String user = userSvc.getCurrentUser().getFullName();
         welcomeLabel.setText("Welcome back, " + user + " · " + LocalDate.now());
 
         loadStats();
@@ -47,10 +52,10 @@ public class HomePanelController {
     }
 
     private void loadStats() {
-        statPatients.setText(String.valueOf(patientSvc.findAll().size()));
-        statTherapists.setText(String.valueOf(therapistSvc.findAll().size()));
+        statPatients.setText(String.valueOf(patientSvc.getAllPatients().size()));
+        statTherapists.setText(String.valueOf(therapistSvc.getAllTherapists().size()));
 
-        long todaySessions = sessSvc.findAll().stream()
+        long todaySessions = sessSvc.getAllSessions().stream()
                 .filter(s -> s.getScheduledAt().toLocalDate().equals(LocalDate.now()))
                 .count();
         statSessions.setText(String.valueOf(todaySessions));
@@ -72,15 +77,15 @@ public class HomePanelController {
         colSStatus.setCellValueFactory(d ->
                 new javafx.beans.property.SimpleStringProperty(d.getValue().getStatus().name()));
 
-        List<TherapySession> all = sessSvc.findAll();
-        List<TherapySession> recent = all.stream().limit(10).toList();
+        List<TherapySessionDTO> all = sessSvc.getAllSessions();
+        List<TherapySessionDTO> recent = all.stream().limit(10).toList();
         recentSessionsTable.setItems(FXCollections.observableArrayList(recent));
         recentSessionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
     private void loadPrograms() {
         programsList.getChildren().clear();
-        for (TherapyProgram p : progSvc.findAll()) {
+        for (TherapyProgramDTO p : progSvc.getAllTherapyPrograms()) {
             VBox card = new VBox(2);
             card.setStyle("-fx-background-color:#f0f9fa;-fx-background-radius:8;-fx-padding:8 12;");
             Label name = new Label(p.getName());
@@ -98,7 +103,7 @@ public class HomePanelController {
         colApEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colApPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
 
-        List<Patient> result = patientSvc.findPatientsEnrolledInAllPrograms();
+        List<PatientDTO> result = patientSvc.findPatientsEnrolledInAllPrograms();
         allProgramsTable.setItems(FXCollections.observableArrayList(result));
         allProgramsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 

@@ -7,6 +7,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import lk.ijse.serenity.MainApp;
+import lk.ijse.serenity.bo.UserBOImpl;
+import lk.ijse.serenity.entity.User;
 
 import java.util.List;
 
@@ -42,9 +44,11 @@ public class DashboardController {
 
     private List<Button> allNavBtns;
 
+    UserBOImpl  userBOImpl =  new UserBOImpl();
+
     @FXML
     public void initialize() {
-        User user = UserBO.getInstance().getCurrentUser();
+        User user = userBOImpl.getCurrentUser();
         footerName.setText(user.getFullName());
         footerRole.setText(user.getRole().name());
 
@@ -52,7 +56,7 @@ public class DashboardController {
                 navPrograms, navSessions, navPayments, navReports, navUsers, navSettings);
 
         // Hide admin-only items for receptionist
-        boolean isAdmin = UserBO.getInstance().isAdmin();
+        boolean isAdmin = userBOImpl.isAdmin();
         navReports.setVisible(true);
         navUsers.setVisible(isAdmin);
         navAdminSection.setVisible(isAdmin);
@@ -134,7 +138,7 @@ public class DashboardController {
 
     @FXML
     public void handleLogout() {
-        UserBO.getInstance().logout();
+        userBOImpl.logout();
         try {
             MainApp.showLogin();
         } catch (Exception e) {
