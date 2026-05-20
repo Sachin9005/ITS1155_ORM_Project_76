@@ -3,6 +3,7 @@ package lk.ijse.serenity.bo;
 import javafx.scene.control.Alert;
 import lk.ijse.serenity.dao.UserDAOImpl;
 import lk.ijse.serenity.entity.User;
+import lk.ijse.serenity.exception.InvalidCredentialsException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Optional;
@@ -25,12 +26,11 @@ public class UserBOImpl {
         Optional<User> userOpt = userDAOImpl.findByUsername(username.trim());
 
         if (userOpt.isEmpty()) {
-            new Alert(Alert.AlertType.ERROR, "Invalid UserName !").show();
+            throw new InvalidCredentialsException();
         }
-
         User user = userOpt.get();
         if (!verifyPassword(password, user.getPasswordHash())) {
-            new Alert(Alert.AlertType.ERROR, "Invalid Password !").show();
+            throw new InvalidCredentialsException();
         }
         this.currentUser = user;
         return user;

@@ -1,10 +1,5 @@
 package lk.ijse.serenity.controller;
 
-import com.serenity.entity.Patient;
-import com.serenity.exception.SerenityException;
-import com.serenity.bo.PatientBO;
-import com.serenity.util.AlertHelper;
-import com.serenity.util.Validator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,6 +7,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import lk.ijse.serenity.bo.PatientBOImpl;
+import lk.ijse.serenity.dto.PatientDTO;
+import lk.ijse.serenity.exception.SerenityException;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -19,16 +17,17 @@ import java.util.List;
 public class PatientPanelController {
 
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd MMM yyyy");
-    private final PatientBO svc = PatientBO.getInstance();
-    private final ObservableList<Patient> data = FXCollections.observableArrayList();
+    private final PatientBOImpl svc = new PatientBOImpl();
+
+    private final ObservableList<PatientDTO> data = FXCollections.observableArrayList();
     @FXML
-    private TableView<Patient> patientTable;
+    private TableView<PatientDTO> patientTable;
     @FXML
-    private TableColumn<Patient, Long> colId;
+    private TableColumn<PatientDTO, Long> colId;
     @FXML
-    private TableColumn<Patient, String> colName, colEmail, colPhone, colDob, colRegDate;
+    private TableColumn<PatientDTO, String> colName, colEmail, colPhone, colDob, colRegDate;
     @FXML
-    private TableColumn<Patient, Void> colActions;
+    private TableColumn<PatientDTO, Void> colActions;
     @FXML
     private TextField searchField;
     @FXML
@@ -43,7 +42,8 @@ public class PatientPanelController {
     private DatePicker fDob;
     @FXML
     private TextArea fMedical;
-    private Patient editingPatient = null;
+
+    private PatientDTO editingPatient = null;
 
     @FXML
     public void initialize() {
@@ -57,7 +57,7 @@ public class PatientPanelController {
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
         colDob.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(
-                d.getValue().getDateOfBirth() != null ? d.getValue().getDateOfBirth().format(FMT) : "—"));
+                d.getValue().getDob() != null ? d.getValue().getDob().format(FMT) : "—"));
         colRegDate.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(
                 d.getValue().getRegistrationDate() != null ? d.getValue().getRegistrationDate().format(FMT) : "—"));
 
@@ -85,7 +85,7 @@ public class PatientPanelController {
     }
 
     private void refresh() {
-        List<Patient> all = svc.findAll();
+        List<PatientDTO> all = svc.getAllPatients();
         data.setAll(all);
         countLabel.setText(all.size() + " patients");
     }
@@ -97,7 +97,7 @@ public class PatientPanelController {
             refresh();
             return;
         }
-        List<Patient> results = svc.search(kw);
+        List<PatientDTO> results = svc.search(kw);
         data.setAll(results);
         countLabel.setText(results.size() + " results");
     }
@@ -116,7 +116,7 @@ public class PatientPanelController {
         showForm(true);
     }
 
-    private void openEditDialog(Patient p) {
+    private void openEditDialog(PatientDTO p) {
         editingPatient = p;
         formTitle.setText("Edit Patient — " + p.getName());
         fName.setText(p.getName());
@@ -124,8 +124,7 @@ public class PatientPanelController {
         fPhone.setText(p.getPhone());
         fAddress.setText(p.getAddress() != null ? p.getAddress() : "");
         fEmergency.setText(p.getEmergencyContact() != null ? p.getEmergencyContact() : "");
-        fMedical.setText(p.getMedicalHistory() != null ? p.getMedicalHistory() : "");
-        fDob.setValue(p.getDateOfBirth());
+        fDob.setValue(p.getDob());
         showForm(true);
     }
 
@@ -134,19 +133,24 @@ public class PatientPanelController {
         formError.setText("");
         try {
             if (editingPatient == null) {
-                svc.register(fName.getText(), fEmail.getText(), fPhone.getText(),
-                        fAddress.getText(), fDob.getValue(), fMedical.getText(), fEmergency.getText());
-                AlertHelper.showSuccess("Saved", "Patient registered successfully.");
+                svc.savePatient(PatientDTO.builder()
+                        .name(fName.getText().trim())
+                        .email(fEmail.getText().trim())
+                        .phone(fPhone.getText().trim())
+                        .address(fAddress.getText().trim())
+                        .emergencyContact(fEmergency.getText().trim())
+                        .dob(fDob.getValue())
+                        .build());
+                new Alert(Alert.AlertType.INFORMATION, "Patient added successfully!").showAndWait();
             } else {
                 editingPatient.setName(fName.getText());
                 editingPatient.setEmail(fEmail.getText());
                 editingPatient.setPhone(fPhone.getText());
                 editingPatient.setAddress(fAddress.getText());
                 editingPatient.setEmergencyContact(fEmergency.getText());
-                editingPatient.setMedicalHistory(fMedical.getText());
-                editingPatient.setDateOfBirth(fDob.getValue());
-                svc.update(editingPatient);
-                AlertHelper.showSuccess("Updated", "Patient record updated.");
+                editingPatient.setDob(fDob.getValue());
+                svc.updatePatient(editingPatient);
+                new Alert(Alert.AlertType.INFORMATION, "Patient updated successfully!").showAndWait();
             }
             closeForm();
             refresh();
@@ -155,22 +159,11 @@ public class PatientPanelController {
         }
     }
 
-    private void deletePatient(Patient p) {
-        if (AlertHelper.confirm("Delete Patient",
-                "Delete '" + p.getName() + "'?\nThis will also remove their sessions and payments.")) {
-            svc.delete(p);
+    private void deletePatient(PatientDTO p) {
+        if (new Alert(Alert.AlertType.CONFIRMATION, "Delete Patient").showAndWait().get() == ButtonType.OK) {
+            svc.deletePatient(p);;
             refresh();
         }
-    }
-
-    @FXML
-    private void validateEmail() {
-        Validator.applyEmailStyle(fEmail);
-    }
-
-    @FXML
-    private void validatePhone() {
-        Validator.applyPhoneStyle(fPhone);
     }
 
     @FXML

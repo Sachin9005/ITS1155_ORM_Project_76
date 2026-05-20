@@ -80,8 +80,22 @@ public class PatientBOImpl {
                     .build());
         }
         return patientDTOList;
-
-
     }
 
+    public List<PatientDTO> search(String keyword) {
+        List<Patient> patients = patientDAO.search(keyword);
+
+        List<PatientDTO> patientDTOList = new ArrayList<>();
+        for (Patient patient : patients) {
+            patientDTOList.add(PatientDTO.builder()
+                    .name(patient.getName())
+                    .email(patient.getEmail())
+                    .phone(patient.getPhone())
+                    .address(patient.getAddress())
+                    .dob(patient.getDateOfBirth())
+                    .emergencyContact(patient.getEmergencyContact())
+                    .build());
+    }
+    return patientDTOList;
+    }
 }
