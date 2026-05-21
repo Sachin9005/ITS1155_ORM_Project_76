@@ -1,9 +1,5 @@
 package lk.ijse.serenity.controller;
 
-import com.serenity.entity.TherapyProgram;
-import com.serenity.exception.SerenityException;
-import com.serenity.bo.TherapyProgramBO;
-import com.serenity.util.AlertHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,26 +7,30 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import lk.ijse.serenity.bo.TherapyProgramBOImpl;
+import lk.ijse.serenity.dto.TherapyProgramDTO;
+import lk.ijse.serenity.exception.SerenityException;
 
 import java.math.BigDecimal;
 
 public class ProgramPanelController {
 
-    private final TherapyProgramBO svc = TherapyProgramBO.getInstance();
-    private final ObservableList<TherapyProgram> data = FXCollections.observableArrayList();
+    private final TherapyProgramBOImpl svc = new TherapyProgramBOImpl();
+    
+    private final ObservableList<TherapyProgramDTO> data = FXCollections.observableArrayList();
     @FXML
-    private TableView<TherapyProgram> programTable;
+    private TableView<TherapyProgramDTO> programTable;
     @FXML
-    private TableColumn<TherapyProgram, String> colPid, colName, colDuration, colFee, colDesc;
+    private TableColumn<TherapyProgramDTO, String> colPid, colName, colDuration, colFee, colDesc;
     @FXML
-    private TableColumn<TherapyProgram, Void> colActions;
+    private TableColumn<TherapyProgramDTO, Void> colActions;
     @FXML
     private VBox formCard;
     @FXML
     private Label formTitle, formError;
     @FXML
     private TextField fPid, fName, fDuration, fFee, fDesc;
-    private TherapyProgram editing = null;
+    private TherapyProgramDTO editing = null;
 
     @FXML
     public void initialize() {
@@ -67,7 +67,7 @@ public class ProgramPanelController {
     }
 
     private void refresh() {
-        data.setAll(svc.findAll());
+        data.setAll(svc.getAllTherapyPrograms());
     }
 
     @FXML
@@ -79,7 +79,7 @@ public class ProgramPanelController {
         showForm(true);
     }
 
-    private void openEdit(TherapyProgram p) {
+    private void openEdit(TherapyProgramDTO p) {
         editing = p;
         formTitle.setText("Edit — " + p.getName());
         fPid.setText(p.getProgramId());
@@ -103,15 +103,28 @@ public class ProgramPanelController {
                 return;
             }
             if (editing == null) {
-                svc.create(fPid.getText(), fName.getText(), fDuration.getText(), fee, fDesc.getText());
-                AlertHelper.showSuccess("Saved", "Therapy program created successfully.");
+                TherapyProgramDTO therapyProgramDTO = TherapyProgramDTO.builder()
+                        .programId(fPid.getText().trim())
+                        .name(fName.getText().trim())
+                        .duration(fDuration.getText().trim())
+                        .fee(fee)
+                        .description(fDesc.getText().trim())
+                        .build();;
+                boolean isSaved = svc.saveTherapyProgram(therapyProgramDTO);
+                if (isSaved) {
+                    throw new SerenityException("Failed to save the therapy program.");
+                }
+                new Alert(Alert.AlertType.INFORMATION, "Therapy program created successfully!").showAndWait();
             } else {
                 editing.setName(fName.getText());
                 editing.setDuration(fDuration.getText());
                 editing.setFee(fee);
                 editing.setDescription(fDesc.getText());
-                svc.update(editing);
-                AlertHelper.showSuccess("Updated", "Program updated.");
+                boolean isUpdate = svc.updateTherapyProgram(editing);
+                if (isUpdate) {
+                    throw new SerenityException("Failed to update the therapy program.");
+                }
+                new Alert(Alert.AlertType.INFORMATION, "Therapy program updated successfully!").showAndWait();
             }
             closeForm();
             refresh();
@@ -120,14 +133,16 @@ public class ProgramPanelController {
         }
     }
 
-    private void delete(TherapyProgram p) {
-        if (AlertHelper.confirm("Delete Program",
-                "Delete '" + p.getName() + "'? This cannot be undone.")) {
+    private void delete(TherapyProgramDTO p) {
+        if (new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete '" + p.getName() + "'?", ButtonType.YES, ButtonType.NO).showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
             try {
-                svc.delete(p);
+                boolean isDelete = svc.deleteTherapyProgram(p);
+                if (isDelete) {
+                    throw new SerenityException("Failed to delete the therapy program.");
+                }
                 refresh();
             } catch (SerenityException e) {
-                AlertHelper.showError("Delete Failed", e.getMessage());
+                new Alert(Alert.AlertType.ERROR, "❌ " + e.getMessage()).showAndWait();
             }
         }
     }

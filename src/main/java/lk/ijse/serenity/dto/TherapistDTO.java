@@ -10,6 +10,7 @@ import lombok.*;
 @Builder
 
 public class TherapistDTO {
+    private Long id;
     private String name;
     private String specialization;
     private String email;

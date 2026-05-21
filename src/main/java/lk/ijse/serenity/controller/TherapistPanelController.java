@@ -1,10 +1,5 @@
 package lk.ijse.serenity.controller;
 
-import com.serenity.entity.Therapist;
-import com.serenity.exception.SerenityException;
-import com.serenity.bo.TherapistBO;
-import com.serenity.util.AlertHelper;
-import com.serenity.util.Validator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,26 +7,30 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import lk.ijse.serenity.bo.TherapistBOImpl;
+import lk.ijse.serenity.dto.TherapistDTO;
+import lk.ijse.serenity.exception.SerenityException;
 
 public class TherapistPanelController {
 
-    private final TherapistBO svc = TherapistBO.getInstance();
-    private final ObservableList<Therapist> data = FXCollections.observableArrayList();
+    private final TherapistBOImpl svc = new TherapistBOImpl();
+    private final ObservableList<TherapistDTO> data = FXCollections.observableArrayList();
     @FXML
-    private TableView<Therapist> therapistTable;
+    private TableView<TherapistDTO> therapistTable;
     @FXML
-    private TableColumn<Therapist, Long> colId;
+    private TableColumn<TherapistDTO, Long> colId;
     @FXML
-    private TableColumn<Therapist, String> colName, colSpec, colEmail, colPhone, colAvail;
+    private TableColumn<TherapistDTO, String> colName, colSpec, colEmail, colPhone, colAvail;
     @FXML
-    private TableColumn<Therapist, Void> colActions;
+    private TableColumn<TherapistDTO, Void> colActions;
     @FXML
     private VBox formCard;
     @FXML
     private Label formTitle, formError;
     @FXML
     private TextField fName, fSpec, fEmail, fPhone, fAvail, fQual;
-    private Therapist editingTherapist = null;
+
+    private TherapistDTO editingTherapist = null;
 
     @FXML
     public void initialize() {
@@ -71,7 +70,7 @@ public class TherapistPanelController {
     }
 
     private void refresh() {
-        data.setAll(svc.findAll());
+        data.setAll(svc.getAllTherapists());
     }
 
     @FXML
@@ -82,7 +81,7 @@ public class TherapistPanelController {
         showForm(true);
     }
 
-    private void openEditDialog(Therapist t) {
+    private void openEditDialog(TherapistDTO t) {
         editingTherapist = t;
         formTitle.setText("Edit Therapist — " + t.getName());
         fName.setText(t.getName());
@@ -99,9 +98,23 @@ public class TherapistPanelController {
         formError.setText("");
         try {
             if (editingTherapist == null) {
-                svc.add(fName.getText(), fSpec.getText(), fEmail.getText(),
-                        fPhone.getText(), fAvail.getText(), fQual.getText());
-                AlertHelper.showSuccess("Saved", "Therapist added successfully.");
+                TherapistDTO newTherapist = TherapistDTO.builder()
+                        .name(fName.getText())
+                        .specialization(fSpec.getText())
+                        .email(fEmail.getText())
+                        .phone(fPhone.getText())
+                        .availability(fAvail.getText())
+                        .qualification(fQual.getText())
+                        .build();
+                boolean isSave = svc.saveTherapist(newTherapist);
+                if (isSave) {
+                    refresh();
+                    showForm(false);
+                    new Alert(Alert.AlertType.INFORMATION, "Success Save Therapist").showAndWait();
+                } else {
+                    formError.setText("Failed to save therapist. Please try again.");
+                }
+
             } else {
                 editingTherapist.setName(fName.getText());
                 editingTherapist.setSpecialization(fSpec.getText());
@@ -109,8 +122,14 @@ public class TherapistPanelController {
                 editingTherapist.setPhone(fPhone.getText());
                 editingTherapist.setAvailability(fAvail.getText());
                 editingTherapist.setQualification(fQual.getText());
-                svc.update(editingTherapist);
-                AlertHelper.showSuccess("Updated", "Therapist updated.");
+                boolean isUpdate = svc.updateTherapist(editingTherapist);
+                if (isUpdate) {
+                    refresh();
+                    showForm(false);
+                    new Alert(Alert.AlertType.INFORMATION, "Success Update Therapist").showAndWait();
+                } else {
+                    formError.setText("Failed to update therapist. Please try again.");
+                }
             }
             closeForm();
             refresh();
@@ -119,22 +138,20 @@ public class TherapistPanelController {
         }
     }
 
-    private void deleteTherapist(Therapist t) {
-        if (AlertHelper.confirm("Delete Therapist",
-                "Delete '" + t.getName() + "'? This will remove their session history too.")) {
-            svc.delete(t);
-            refresh();
+    private void deleteTherapist(TherapistDTO t) {
+        if (new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete therapist: " + t.getName() + "?", ButtonType.YES, ButtonType.NO).showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
+            try {
+                boolean isDeleted = svc.deleteTherapist(t);
+                if (isDeleted) {
+                    refresh();
+                    new Alert(Alert.AlertType.INFORMATION, "Therapist deleted successfully.").showAndWait();
+                } else {
+                    new Alert(Alert.AlertType.ERROR, "Failed to delete therapist. Please try again.").showAndWait();
+                }
+            } catch (SerenityException e) {
+                new Alert(Alert.AlertType.ERROR, "Failed to delete therapist. Please try again.").showAndWait();
+            }
         }
-    }
-
-    @FXML
-    private void validateEmail() {
-        Validator.applyEmailStyle(fEmail);
-    }
-
-    @FXML
-    private void validatePhone() {
-        Validator.applyPhoneStyle(fPhone);
     }
 
     @FXML

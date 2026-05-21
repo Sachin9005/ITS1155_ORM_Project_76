@@ -19,4 +19,13 @@ public class UserDAOImpl extends CrudDAOImpl<User> {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean existsByUsername(String username) {
+        try (Session session = FactoryConfiguration.getInstance().getSession()) {
+            Long count = session.createQuery(
+                            "SELECT COUNT(u) FROM User u WHERE u.username = :username", Long.class)
+                    .setParameter("username", username).uniqueResult();
+            return count != null && count > 0;
+        }
+    }
 }

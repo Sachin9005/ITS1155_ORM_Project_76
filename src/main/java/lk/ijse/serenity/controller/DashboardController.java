@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import lk.ijse.serenity.MainApp;
 import lk.ijse.serenity.bo.UserBOImpl;
+import lk.ijse.serenity.dto.UserDTO;
 import lk.ijse.serenity.entity.User;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public class DashboardController {
 
     @FXML
     public void initialize() {
-        User user = userBOImpl.getCurrentUser();
+        UserDTO user = userBOImpl.getCurrentUser();
         footerName.setText(user.getFullName());
         footerRole.setText(user.getRole().name());
 

@@ -4,6 +4,7 @@ import lk.ijse.serenity.dao.TherapistDAOImpl;
 import lk.ijse.serenity.dto.TherapistDTO;
 import lk.ijse.serenity.entity.Therapist;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TherapistBOImpl {
@@ -52,7 +53,24 @@ public class TherapistBOImpl {
         return therapistDAO.delete(therapistEntity);
     }
 
-    public List<Therapist> getAllTherapists() {
-        return therapistDAO.findAll();
+    public List<TherapistDTO> getAllTherapists() {
+
+        List<Therapist> therapists =  therapistDAO.findAll();
+
+        List<TherapistDTO> therapistDTOList = new ArrayList<>();
+        for (Therapist therapist : therapists) {
+            therapistDTOList.add(TherapistDTO.builder()
+                    .id(therapist.getId())
+                    .name(therapist.getName())
+                    .specialization(therapist.getSpecialization())
+                    .email(therapist.getEmail())
+                    .phone(therapist.getPhone())
+                    .availability(therapist.getAvailability())
+                    .qualification(therapist.getQualification())
+                    .build());
+        }
+        return therapistDTOList;
+
+
     }
 }

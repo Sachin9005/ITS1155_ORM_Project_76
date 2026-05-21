@@ -1,32 +1,30 @@
 package lk.ijse.serenity.controller;
 
-import com.serenity.bo.UserBO;
-import com.serenity.dao.UserDAO;
-import com.serenity.entity.User;
-import com.serenity.exception.DuplicateRegistrationException;
-import com.serenity.exception.SerenityException;
-import com.serenity.util.AlertHelper;
-import com.serenity.util.Validator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import lk.ijse.serenity.bo.UserBOImpl;
+import lk.ijse.serenity.dto.UserDTO;
+import lk.ijse.serenity.entity.User;
+import lk.ijse.serenity.exception.DuplicateRegistrationException;
+import lk.ijse.serenity.exception.SerenityException;
+import lk.ijse.serenity.util.Validator;
 
 public class UserPanelController {
 
-    private final UserDAO userDAO = new UserDAO();
-    private final UserBO auth = UserBO.getInstance();
-    private final ObservableList<User> data = FXCollections.observableArrayList();
+    private final UserBOImpl userBO = new UserBOImpl();
+    private final ObservableList<UserDTO> data = FXCollections.observableArrayList();
     @FXML
-    private TableView<User> userTable;
+    private TableView<UserDTO> userTable;
     @FXML
-    private TableColumn<User, Long> colId;
+    private TableColumn<UserDTO, Long> colId;
     @FXML
-    private TableColumn<User, String> colUsername, colFullName, colEmail, colRole;
+    private TableColumn<UserDTO, String> colUsername, colFullName, colEmail, colRole;
     @FXML
-    private TableColumn<User, Void> colActions;
+    private TableColumn<UserDTO, Void> colActions;
     @FXML
     private VBox formCard;
     @FXML
@@ -62,9 +60,9 @@ public class UserPanelController {
                     setGraphic(null);
                     return;
                 }
-                User u = getTableView().getItems().get(getIndex());
+                UserDTO u = getTableView().getItems().get(getIndex());
                 // Cannot delete yourself
-                delBtn.setDisable(u.getId().equals(auth.getCurrentUser().getId()));
+                delBtn.setDisable(u.getId().equals(userBO.getCurrentUser().getId()));
                 setGraphic(delBtn);
             }
         });
@@ -78,7 +76,7 @@ public class UserPanelController {
     }
 
     private void refresh() {
-        data.setAll(userDAO.findAll());
+        data.setAll(userBO.getAllUsers());
     }
 
     @FXML
@@ -106,13 +104,21 @@ public class UserPanelController {
             }
             Validator.requireValidPassword(pass);
             if (fEmail.getText().length() > 0) Validator.requireValidEmail(fEmail.getText());
-            if (userDAO.existsByUsername(username)) {
+            if (userBO.existsByUsername(username)) {
                 throw new DuplicateRegistrationException("Username", username);
             }
-            User u = new User(username, auth.hashPassword(pass),
-                    fRole.getValue(), fFullName.getText(), fEmail.getText());
-            userDAO.save(u);
-            AlertHelper.showSuccess("User Created", "Account '" + username + "' created.");
+            UserDTO newUser = UserDTO.builder()
+                    .username(username)
+                    .passwordHash(userBO.hashPassword(pass))
+                    .role(fRole.getValue())
+                    .fullName(fFullName.getText().trim())
+                    .email(fEmail.getText().trim())
+                    .build();
+            boolean isSaved = userBO.saveUser(newUser);
+            if (!isSaved) {
+                throw new SerenityException("Failed to save user. Please try again.");
+            }
+            new Alert(Alert.AlertType.INFORMATION, "User created successfully!").showAndWait();
             closeForm();
             refresh();
         } catch (SerenityException e) {
@@ -120,17 +126,15 @@ public class UserPanelController {
         }
     }
 
-    private void deleteUser(User u) {
-        if (AlertHelper.confirm("Delete User",
-                "Delete user '" + u.getUsername() + "'? This cannot be undone.")) {
-            userDAO.delete(u);
+    private void deleteUser(UserDTO u) {
+        if (new Alert(Alert.AlertType.CONFIRMATION, "Delete user '" + u.getUsername() + "'? This cannot)) be undone.")
+                .showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            boolean isDeleted = userBO.deleteUser(u);
+            if (!isDeleted) {
+                throw new SerenityException("Failed to delete user. Please try again.");
+            }
             refresh();
         }
-    }
-
-    @FXML
-    private void validateEmail() {
-        Validator.applyEmailStyle(fEmail);
     }
 
     @FXML

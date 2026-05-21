@@ -1,9 +1,6 @@
 package lk.ijse.serenity.controller;
 
-import com.serenity.entity.*;
-import com.serenity.exception.SerenityException;
-import com.serenity.bo.*;
-import com.serenity.util.AlertHelper;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,6 +8,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import lk.ijse.serenity.bo.PatientBOImpl;
+import lk.ijse.serenity.bo.TherapistBOImpl;
+import lk.ijse.serenity.bo.TherapyProgramBOImpl;
+import lk.ijse.serenity.bo.TherapySessionBOImpl;
+import lk.ijse.serenity.dto.PatientDTO;
+import lk.ijse.serenity.dto.TherapistDTO;
+import lk.ijse.serenity.dto.TherapyProgramDTO;
+import lk.ijse.serenity.dto.TherapySessionDTO;
+import lk.ijse.serenity.entity.TherapySession;
+import lk.ijse.serenity.exception.SerenityException;
+import lk.ijse.serenity.util.Converter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,20 +30,20 @@ import java.util.stream.Collectors;
 public class SessionPanelController {
 
     private static final DateTimeFormatter DT_FMT = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm");
-    private final TherapySessionBO sessSvc = TherapySessionBO.getInstance();
-    private final PatientBO patientSvc = PatientBO.getInstance();
-    private final TherapistBO therapistSvc = TherapistBO.getInstance();
-    private final TherapyProgramBO progSvc = TherapyProgramBO.getInstance();
-    private final ObservableList<TherapySession> allData = FXCollections.observableArrayList();
-    private final ObservableList<TherapySession> viewData = FXCollections.observableArrayList();
+    private final TherapySessionBOImpl sessSvc = new TherapySessionBOImpl();
+    private final PatientBOImpl patientSvc = new PatientBOImpl();
+    private final TherapistBOImpl therapistSvc = new TherapistBOImpl();
+    private final TherapyProgramBOImpl progSvc = new TherapyProgramBOImpl();
+    private final ObservableList<TherapySessionDTO> allData = FXCollections.observableArrayList();
+    private final ObservableList<TherapySessionDTO> viewData = FXCollections.observableArrayList();
     @FXML
-    private TableView<TherapySession> sessionTable;
+    private TableView<TherapySessionDTO> sessionTable;
     @FXML
-    private TableColumn<TherapySession, Long> colId;
+    private TableColumn<TherapySessionDTO, Long> colId;
     @FXML
-    private TableColumn<TherapySession, String> colPatient, colTherapist, colProgram, colDate, colStatus;
+    private TableColumn<TherapySessionDTO, String> colPatient, colTherapist, colProgram, colDate, colStatus;
     @FXML
-    private TableColumn<TherapySession, Void> colActions;
+    private TableColumn<TherapySessionDTO, Void> colActions;
     @FXML
     private ComboBox<String> statusFilter;
     @FXML
@@ -47,16 +55,17 @@ public class SessionPanelController {
     @FXML
     private Label formTitle, formError;
     @FXML
-    private ComboBox<Patient> fPatient;
+    private ComboBox<PatientDTO> fPatient;
     @FXML
-    private ComboBox<TherapyProgram> fProgram;
+    private ComboBox<TherapyProgramDTO> fProgram;
     @FXML
-    private ComboBox<Therapist> fTherapist;
+    private ComboBox<TherapistDTO> fTherapist;
     @FXML
     private DatePicker fDate;
     @FXML
     private TextField fTime, fNotes;
-    private TherapySession reschedulingSession = null;
+
+    private TherapySessionDTO reschedulingSession = null;
 
     @FXML
     public void initialize() {
@@ -102,7 +111,7 @@ public class SessionPanelController {
                     setGraphic(null);
                     return;
                 }
-                TherapySession s = getTableView().getItems().get(getIndex());
+                TherapySessionDTO s = getTableView().getItems().get(getIndex());
                 boolean active = s.getStatus() == TherapySession.Status.SCHEDULED
                         || s.getStatus() == TherapySession.Status.RESCHEDULED;
                 reschedBtn.setDisable(!active);
@@ -123,13 +132,13 @@ public class SessionPanelController {
     }
 
     private void loadComboBoxes() {
-        fPatient.setItems(FXCollections.observableArrayList(patientSvc.findAll()));
-        fProgram.setItems(FXCollections.observableArrayList(progSvc.findAll()));
-        fTherapist.setItems(FXCollections.observableArrayList(therapistSvc.findAll()));
+        fPatient.setItems(FXCollections.observableArrayList(patientSvc.getAllPatients()));
+        fProgram.setItems(FXCollections.observableArrayList(progSvc.getAllTherapyPrograms()));
+        fTherapist.setItems(FXCollections.observableArrayList(therapistSvc.getAllTherapists()));
     }
 
     private void refresh() {
-        allData.setAll(sessSvc.findAll());
+        allData.setAll(sessSvc.getAllSessions());
         applyFilter();
     }
 
@@ -137,7 +146,7 @@ public class SessionPanelController {
     private void applyFilter() {
         String status = statusFilter.getValue();
         String name = patientFilter.getText().toLowerCase().trim();
-        List<TherapySession> filtered = allData.stream()
+        List<TherapySessionDTO> filtered = allData.stream()
                 .filter(s -> status == null || status.equals("ALL") || s.getStatus().name().equals(status))
                 .filter(s -> name.isEmpty() || s.getPatient().getName().toLowerCase().contains(name))
                 .collect(Collectors.toList());
@@ -160,17 +169,17 @@ public class SessionPanelController {
         showForm(true);
     }
 
-    private void openReschedule(TherapySession s) {
+    private void openReschedule(TherapySessionDTO s) {
         reschedulingSession = s;
         formTitle.setText("Reschedule — " + s.getPatient().getName());
-        fPatient.setValue(s.getPatient());
+
+        fPatient.setValue(Converter.toPatientDTO(s.getPatient()));
         fPatient.setDisable(true);
-        fProgram.setValue(s.getTherapyProgram());
+        fProgram.setValue(Converter.toTherapyProgramDTO(s.getTherapyProgram()));
         fProgram.setDisable(true);
-        fTherapist.setValue(s.getTherapist());
+        fTherapist.setValue(Converter.toTherapistDTO(s.getTherapist()));
         fDate.setValue(s.getScheduledAt().toLocalDate());
         fTime.setText(s.getScheduledAt().format(DateTimeFormatter.ofPattern("HH:mm")));
-        fNotes.setText(s.getNotes() != null ? s.getNotes() : "");
         showForm(true);
     }
 
@@ -205,12 +214,23 @@ public class SessionPanelController {
                     formError.setText("❌ Select a therapist.");
                     return;
                 }
-                sessSvc.book(fPatient.getValue(), fTherapist.getValue(),
-                        fProgram.getValue(), dt, fNotes.getText());
-                AlertHelper.showSuccess("Booked", "Session booked successfully.");
+                TherapySessionDTO s = TherapySessionDTO.builder()
+                        .patient(Converter.toPatientEntity(fPatient.getValue()))
+                        .therapyProgram(Converter.toTherapyProgramEntity(fProgram.getValue()))
+                        .therapist(Converter.toTherapistEntity(fTherapist.getValue()))
+                        .scheduledAt(dt)
+                        .build();
+                boolean isBooked = sessSvc.book(s);
+                if (!isBooked) {
+                    throw new SerenityException("Scheduling conflict: Therapist or patient is not available at this time.");
+                }
+                new Alert(Alert.AlertType.INFORMATION, "Session booked successfully!").showAndWait();
             } else {
-                sessSvc.reschedule(reschedulingSession, dt);
-                AlertHelper.showSuccess("Rescheduled", "Session has been rescheduled.");
+                boolean isRescheduled = sessSvc.reschedule(reschedulingSession, dt);
+                if (!isRescheduled) {
+                    throw new SerenityException("Scheduling conflict: Therapist or patient is not available at this time.");
+                }
+                new Alert(Alert.AlertType.INFORMATION, "Session rescheduled successfully!").showAndWait();
             }
             closeForm();
             refresh();
@@ -219,19 +239,24 @@ public class SessionPanelController {
         }
     }
 
-    private void cancelSession(TherapySession s) {
-        if (AlertHelper.confirm("Cancel Session",
-                "Cancel the session for '" + s.getPatient().getName() + "' on "
-                        + s.getScheduledAt().format(DT_FMT) + "?")) {
-            sessSvc.cancel(s);
+    private void cancelSession(TherapySessionDTO s) {
+        if (new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel this session?").showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            boolean isCanceled = sessSvc.cancel(s);
+            if (!isCanceled) {
+                new Alert(Alert.AlertType.ERROR, "Failed to cancel session. It may have already been completed or canceled.").showAndWait();
+                return;
+            }
             refresh();
         }
     }
 
-    private void completeSession(TherapySession s) {
-        if (AlertHelper.confirm("Mark Complete",
-                "Mark this session as completed?")) {
-            sessSvc.complete(s);
+    private void completeSession(TherapySessionDTO s) {
+        if (new Alert(Alert.AlertType.CONFIRMATION, "Mark this session as completed?").showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            boolean isCompleted = sessSvc.complete(s);
+            if (!isCompleted) {
+                new Alert(Alert.AlertType.ERROR, "Failed to complete session.").showAndWait();
+                return;
+            }
             refresh();
         }
     }

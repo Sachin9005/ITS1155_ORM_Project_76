@@ -1,9 +1,5 @@
 package lk.ijse.serenity.controller;
 
-import com.serenity.entity.*;
-import com.serenity.exception.SerenityException;
-import com.serenity.bo.*;
-import com.serenity.util.AlertHelper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,6 +7,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import lk.ijse.serenity.bo.PatientBOImpl;
+import lk.ijse.serenity.bo.PaymentBOImpl;
+import lk.ijse.serenity.bo.TherapySessionBOImpl;
+import lk.ijse.serenity.dto.PatientDTO;
+import lk.ijse.serenity.dto.PaymentDTO;
+import lk.ijse.serenity.dto.TherapySessionDTO;
+import lk.ijse.serenity.entity.Payment;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
@@ -19,17 +22,18 @@ import java.util.List;
 public class PaymentPanelController {
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd MMM yyyy");
-    private final PaymentBO paymentSvc = PaymentBO.getInstance();
-    private final PatientBO patientSvc = PatientBO.getInstance();
-    private final TherapySessionBO sessSvc = TherapySessionBO.getInstance();
-    private final ObservableList<Payment> data = FXCollections.observableArrayList();
+    private final PaymentBOImpl paymentSvc = new PaymentBOImpl();
+    private final PatientBOImpl patientSvc = new PatientBOImpl();
+    private final TherapySessionBOImpl sessSvc = new TherapySessionBOImpl();
+
+    private final ObservableList<PaymentDTO> data = FXCollections.observableArrayList();
     @FXML
-    private TableView<Payment> paymentTable;
+    private TableView<PaymentDTO> paymentTable;
     @FXML
-    private TableColumn<Payment, String> colInvoice, colPatient, colAmount,
+    private TableColumn<PaymentDTO, String> colInvoice, colPatient, colAmount,
             colMethod, colDate, colStatus;
     @FXML
-    private TableColumn<Payment, Void> colActions;
+    private TableColumn<PaymentDTO, Void> colActions;
     @FXML
     private Label lblRevenue, lblCount, lblPending;
     @FXML
@@ -37,9 +41,9 @@ public class PaymentPanelController {
     @FXML
     private Label formError;
     @FXML
-    private ComboBox<Patient> fPatient;
+    private ComboBox<PatientDTO> fPatient;
     @FXML
-    private ComboBox<TherapySession> fSession;
+    private ComboBox<TherapySessionDTO> fSession;
     @FXML
     private ComboBox<Payment.PaymentMethod> fMethod;
     @FXML

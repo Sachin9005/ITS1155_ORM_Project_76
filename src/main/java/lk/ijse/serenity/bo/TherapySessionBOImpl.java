@@ -3,6 +3,7 @@ package lk.ijse.serenity.bo;
 import lk.ijse.serenity.dao.TherapySessionDAOImpl;
 import lk.ijse.serenity.dto.TherapySessionDTO;
 import lk.ijse.serenity.entity.TherapySession;
+import lk.ijse.serenity.exception.SerenityException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,13 +13,13 @@ public class TherapySessionBOImpl {
 
     private final TherapySessionDAOImpl dao = new TherapySessionDAOImpl();
 
-    public boolean book(TherapySessionDTO therapySessionDTO) throws Exception {
-        if (therapySessionDTO.getScheduledAt() == null) throw new Exception("Scheduled date/time");
+    public boolean book(TherapySessionDTO therapySessionDTO)  {
+        if (therapySessionDTO.getScheduledAt() == null) throw new SecurityException("Scheduled date/time");
         if (therapySessionDTO.getScheduledAt().isBefore(LocalDateTime.now())) {
-            throw new Exception("Session date must be in the future.");
+            throw new SerenityException("Session date must be in the future.");
         }
         if (dao.hasConflict(therapySessionDTO.getTherapist().getId(), therapySessionDTO.getScheduledAt(), null)) {
-            throw new Exception("Scheduling conflict for " + therapySessionDTO.getTherapist().getName() + " at " + therapySessionDTO.getScheduledAt());
+            throw new SerenityException("Scheduling conflict for " + therapySessionDTO.getTherapist().getName() + " at " + therapySessionDTO.getScheduledAt());
         }
         TherapySession therapySession = TherapySession.builder()
                 .patient(therapySessionDTO.getPatient())
@@ -30,9 +31,9 @@ public class TherapySessionBOImpl {
         return dao.save(therapySession);
     }
 
-    public boolean reschedule(TherapySessionDTO session, LocalDateTime newTime) throws Exception {
+    public boolean reschedule(TherapySessionDTO session, LocalDateTime newTime) {
         if (dao.hasConflict(session.getTherapist().getId(), newTime, session.getId())) {
-            throw new Exception("Scheduling conflict for " + session.getTherapist().getName() + " at " + newTime);
+            throw new SerenityException("Scheduling conflict for " + session.getTherapist().getName() + " at " + newTime);
         }
         session.setScheduledAt(newTime);
         session.setStatus(TherapySession.Status.RESCHEDULED);

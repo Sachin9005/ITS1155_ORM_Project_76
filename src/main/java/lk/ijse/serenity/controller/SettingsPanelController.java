@@ -1,12 +1,11 @@
 package lk.ijse.serenity.controller;
 
-import com.serenity.bo.UserBO;
-import com.serenity.entity.User;
-import com.serenity.exception.SerenityException;
-import com.serenity.util.AlertHelper;
-import com.serenity.util.Validator;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import lk.ijse.serenity.bo.UserBOImpl;
+import lk.ijse.serenity.dto.UserDTO;
+import lk.ijse.serenity.exception.SerenityException;
+import lk.ijse.serenity.util.Validator;
 
 public class SettingsPanelController {
 
@@ -27,9 +26,11 @@ public class SettingsPanelController {
     private boolean oldVisible = false;
     private boolean newVisible = false;
 
+    UserBOImpl userBO = new UserBOImpl();
+
     @FXML
     public void initialize() {
-        User u = UserBO.getInstance().getCurrentUser();
+        UserDTO u = userBO.getCurrentUser();
         lblName.setText(u.getFullName() != null ? u.getFullName() : "—");
         lblRole.setText(u.getRole().name());
         lblEmail.setText(u.getEmail() != null ? u.getEmail() : "—");
@@ -69,10 +70,10 @@ public class SettingsPanelController {
                 usernameError.setText("❌ Username must be 4-30 chars, letters/digits/underscore only.");
                 return;
             }
-            UserBO.getInstance().changeUsername(newUser);
+            userBO.changeUsername(newUser);
             lblCurrentUsername.setText(newUser);
             fNewUsername.clear();
-            AlertHelper.showSuccess("Username Updated", "Your username has been changed to: " + newUser);
+            new Alert(Alert.AlertType.INFORMATION, "Username changed successfully!").showAndWait();
         } catch (SerenityException e) {
             usernameError.setText("❌ " + e.getMessage());
         }
@@ -95,11 +96,10 @@ public class SettingsPanelController {
         }
         try {
             Validator.requireValidPassword(newPass);
-            UserBO.getInstance().changePassword(oldPass, newPass);
+            userBO.changePassword(oldPass, newPass);
             fOldPass.clear();
             fNewPass.clear();
-            fConfirmPass.clear();
-            AlertHelper.showSuccess("Password Updated", "Your password has been changed successfully.");
+            new Alert(Alert.AlertType.INFORMATION, "Password changed successfully!").showAndWait();
         } catch (SerenityException e) {
             passwordError.setText("❌ " + e.getMessage());
         }
