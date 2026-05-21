@@ -24,4 +24,13 @@ public class PaymentDAOImpl extends CrudDAOImpl<Payment>{
             return result != null ? result : BigDecimal.ZERO;
         }
     }
+
+    public long countPending() {
+        try (Session session =FactoryConfiguration.getInstance().getSession()) {
+            Long count = session.createQuery(
+                            "SELECT COUNT(p) FROM Payment p WHERE p.status = 'PENDING'", Long.class)
+                    .uniqueResult();
+            return count != null ? count : 0;
+        }
+    }
 }

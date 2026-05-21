@@ -14,6 +14,8 @@ import lk.ijse.serenity.dto.PatientDTO;
 import lk.ijse.serenity.dto.PaymentDTO;
 import lk.ijse.serenity.dto.TherapySessionDTO;
 import lk.ijse.serenity.entity.Payment;
+import lk.ijse.serenity.exception.SerenityException;
+import lk.ijse.serenity.util.Converter;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
@@ -86,7 +88,7 @@ public class PaymentPanelController {
                     setGraphic(null);
                     return;
                 }
-                Payment p = getTableView().getItems().get(getIndex());
+                PaymentDTO p = getTableView().getItems().get(getIndex());
                 refundBtn.setDisable(p.getStatus() != Payment.Status.COMPLETED);
                 setGraphic(box);
             }
@@ -97,14 +99,13 @@ public class PaymentPanelController {
     }
 
     private void setupForm() {
-        fPatient.setItems(FXCollections.observableArrayList(patientSvc.findAll()));
+        fPatient.setItems(FXCollections.observableArrayList(patientSvc.getAllPatients()));
         fMethod.setItems(FXCollections.observableArrayList(Payment.PaymentMethod.values()));
         fMethod.setValue(Payment.PaymentMethod.CASH);
 
         // Custom display for sessions
         fSession.setCellFactory(lv -> new ListCell<>() {
-            @Override
-            protected void updateItem(TherapySession s, boolean empty) {
+            protected void updateItem(TherapySessionDTO s, boolean empty) {
                 super.updateItem(s, empty);
                 if (empty || s == null) setText(null);
                 else setText(s.getTherapyProgram().getName() + " — "
@@ -113,8 +114,7 @@ public class PaymentPanelController {
             }
         });
         fSession.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(TherapySession s, boolean empty) {
+            protected void updateItem(TherapySessionDTO s, boolean empty) {
                 super.updateItem(s, empty);
                 if (empty || s == null) setText("Select session");
                 else setText(s.getTherapyProgram().getName() + " — "
@@ -125,13 +125,13 @@ public class PaymentPanelController {
 
     @FXML
     private void loadPatientSessions() {
-        Patient p = fPatient.getValue();
+        PatientDTO p = fPatient.getValue();
         if (p == null) return;
-        List<TherapySession> sessions = sessSvc.findByPatient(p.getId());
+        List<TherapySessionDTO> sessions = sessSvc.findByPatient(p.getId());
         fSession.setItems(FXCollections.observableArrayList(sessions));
         // Auto-fill amount from program fee if session selected
         fSession.setOnAction(e -> {
-            TherapySession s = fSession.getValue();
+            TherapySessionDTO s = fSession.getValue();
             if (s != null && s.getTherapyProgram().getFee() != null) {
                 fAmount.setText(s.getTherapyProgram().getFee().toPlainString());
             }
@@ -139,7 +139,7 @@ public class PaymentPanelController {
     }
 
     private void refresh() {
-        List<Payment> all = paymentSvc.findAll();
+        List<PaymentDTO> all = paymentSvc.findAll();
         data.setAll(all);
         lblRevenue.setText(String.format("%,.2f", paymentSvc.totalRevenue()));
         lblCount.setText(String.valueOf(all.size()));
@@ -180,9 +180,18 @@ public class PaymentPanelController {
                 formError.setText("❌ Amount must be a valid number.");
                 return;
             }
-            paymentSvc.process(fPatient.getValue(), fSession.getValue(), amount, fMethod.getValue());
-            AlertHelper.showSuccess("Payment Processed",
-                    "Payment recorded. Invoice will appear in the table.");
+            PaymentDTO p = PaymentDTO.builder()
+                    .patient(Converter.toPatientEntity(fPatient.getValue()))
+                    .therapySession(Converter.toTherapySessionEntity(fSession.getValue()))
+                    .paymentMethod(fMethod.getValue())
+                    .amount(amount)
+                    .build();
+            boolean isSaved = paymentSvc.savePayment(p);
+            if(!isSaved){
+                throw new SerenityException("Failed to save payment. Please try again.");
+            }
+            new Alert(Alert.AlertType.INFORMATION, "Payment processed successfully!").showAndWait();
+            formCard.setVisible(false);
             closeForm();
             refresh();
         } catch (SerenityException e) {
@@ -190,7 +199,7 @@ public class PaymentPanelController {
         }
     }
 
-    private void printInvoice(Payment p) {
+    private void printInvoice(PaymentDTO p) {
         String invoice =
                 "========================================\n" +
                         "  SERENITY MENTAL HEALTH THERAPY CENTER\n" +
@@ -217,12 +226,15 @@ public class PaymentPanelController {
         alert.showAndWait();
     }
 
-    private void refund(Payment p) {
-        if (AlertHelper.confirm("Refund Payment",
-                "Refund invoice " + p.getInvoiceNumber() + " (LKR "
-                        + String.format("%,.2f", p.getAmount()) + ")?")) {
-            paymentSvc.refund(p);
+    private void refund(PaymentDTO p) {
+
+        if (new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to refund " + p.getInvoiceNumber() + " this payment?").showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
+            boolean isSaved = paymentSvc.savePayment(p);
+            if(!isSaved){
+                new Alert(Alert.AlertType.ERROR, "Failed to process refund. Please try again.").showAndWait();
+            }
             refresh();
+            new Alert(Alert.AlertType.INFORMATION, "Payment refunded successfully!").showAndWait();
         }
     }
 

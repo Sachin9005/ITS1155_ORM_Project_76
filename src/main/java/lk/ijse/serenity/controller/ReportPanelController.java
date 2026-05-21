@@ -1,7 +1,5 @@
 package lk.ijse.serenity.controller;
 
-import com.serenity.entity.*;
-import com.serenity.bo.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,6 +7,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import lk.ijse.serenity.bo.PaymentBOImpl;
+import lk.ijse.serenity.bo.TherapistBOImpl;
+import lk.ijse.serenity.bo.TherapyProgramBOImpl;
+import lk.ijse.serenity.bo.TherapySessionBOImpl;
+import lk.ijse.serenity.dto.TherapistDTO;
+import lk.ijse.serenity.dto.TherapyProgramDTO;
+import lk.ijse.serenity.dto.TherapySessionDTO;
+import lk.ijse.serenity.entity.TherapySession;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -18,28 +24,28 @@ import java.util.stream.Collectors;
 public class ReportPanelController {
 
     private static final DateTimeFormatter DT_FMT = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm");
-    private final TherapySessionBO sessSvc = TherapySessionBO.getInstance();
-    private final TherapistBO therapistSvc = TherapistBO.getInstance();
-    private final TherapyProgramBO progSvc = TherapyProgramBO.getInstance();
-    private final PaymentBO paymentSvc = PaymentBO.getInstance();
-    private final ObservableList<TherapySession> allSessions = FXCollections.observableArrayList();
-    private final ObservableList<TherapySession> historyData = FXCollections.observableArrayList();
+    private final TherapySessionBOImpl sessSvc = new TherapySessionBOImpl();
+    private final TherapistBOImpl therapistSvc = new TherapistBOImpl();
+    private final TherapyProgramBOImpl progSvc = new TherapyProgramBOImpl();
+    private final PaymentBOImpl paymentSvc = new PaymentBOImpl();
+    private final ObservableList<TherapySessionDTO> allSessions = FXCollections.observableArrayList();
+    private final ObservableList<TherapySessionDTO> historyData = FXCollections.observableArrayList();
     // KPI labels
     @FXML
     private Label kpiSessions, kpiCompleted, kpiCancelled, kpiRevenue;
     // Therapist performance table
     @FXML
-    private TableView<Therapist> therapistTable;
+    private TableView<TherapistDTO> therapistTable;
     @FXML
-    private TableColumn<Therapist, String> colTName, colTSpec, colTTotal, colTDone;
+    private TableColumn<TherapistDTO, String> colTName, colTSpec, colTTotal, colTDone;
     // Program enrollment panel
     @FXML
     private VBox programStats;
     // Patient history table
     @FXML
-    private TableView<TherapySession> historyTable;
+    private TableView<TherapySessionDTO> historyTable;
     @FXML
-    private TableColumn<TherapySession, String> colHPatient, colHProgram, colHTherapist, colHDate, colHStatus;
+    private TableColumn<TherapySessionDTO, String> colHPatient, colHProgram, colHTherapist, colHDate, colHStatus;
     @FXML
     private TextField searchPatient;
 
@@ -54,7 +60,7 @@ public class ReportPanelController {
     // ── KPIs ──────────────────────────────────────────────────────────────────
 
     private void loadKpis() {
-        List<TherapySession> all = sessSvc.findAll();
+        List<TherapySessionDTO> all = sessSvc.getAllSessions();
         allSessions.setAll(all);
 
         kpiSessions.setText(String.valueOf(all.size()));
@@ -88,7 +94,7 @@ public class ReportPanelController {
         colTDone.setCellValueFactory(d -> new SimpleStringProperty(
                 String.valueOf(doneMap.getOrDefault(d.getValue().getId(), 0L))));
 
-        therapistTable.setItems(FXCollections.observableArrayList(therapistSvc.findAll()));
+        therapistTable.setItems(FXCollections.observableArrayList(therapistSvc.getAllTherapists()));
         therapistTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
@@ -103,7 +109,7 @@ public class ReportPanelController {
 
         long maxCount = countByProgram.values().stream().mapToLong(Long::longValue).max().orElse(1L);
 
-        for (TherapyProgram p : progSvc.findAll()) {
+        for (TherapyProgramDTO p : progSvc.getAllTherapyPrograms()) {
             long count = countByProgram.getOrDefault(p.getName(), 0L);
             double pct = maxCount > 0 ? (count * 100.0 / maxCount) : 0;
 
@@ -126,7 +132,7 @@ public class ReportPanelController {
             programStats.getChildren().add(row);
         }
 
-        if (progSvc.findAll().isEmpty()) {
+        if (progSvc.getAllTherapyPrograms().isEmpty()) {
             Label empty = new Label("No programs found.");
             empty.setStyle("-fx-text-fill:#7a8a95;-fx-font-size:12px;");
             programStats.getChildren().add(empty);

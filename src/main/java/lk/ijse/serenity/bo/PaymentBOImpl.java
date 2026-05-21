@@ -5,6 +5,7 @@ import lk.ijse.serenity.dto.PaymentDTO;
 import lk.ijse.serenity.entity.Payment;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class PaymentBOImpl {
 
@@ -30,5 +31,24 @@ public class PaymentBOImpl {
 
     public BigDecimal totalRevenue() {
         return paymentDAO.totalRevenue();
+    }
+
+    public List<PaymentDTO> findAll() {
+        List<Payment> payments =  paymentDAO.getAll();
+
+        List<PaymentDTO> paymentDTOs = payments.stream().map(p -> PaymentDTO.builder()
+                .invoiceNumber(p.getInvoiceNumber())
+                .patient(p.getPatient())
+                .therapySession(p.getTherapySession())
+                .amount(p.getAmount())
+                .paymentDate(p.getPaymentDate())
+                .status(p.getStatus())
+                .paymentMethod(p.getPaymentMethod())
+                .build()).toList();
+        return paymentDTOs;
+    }
+
+    public long countPending() {
+        return paymentDAO.countPending();
     }
 }
