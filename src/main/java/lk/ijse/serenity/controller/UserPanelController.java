@@ -127,7 +127,7 @@ public class UserPanelController {
     }
 
     private void deleteUser(UserDTO u) {
-        if (new Alert(Alert.AlertType.CONFIRMATION, "Delete user '" + u.getUsername() + "'? This cannot)) be undone.")
+        if (new Alert(Alert.AlertType.CONFIRMATION, "Delete user '" + u.getUsername() + "'? This cannot be undone.")
                 .showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             boolean isDeleted = userBO.deleteUser(u);
             if (!isDeleted) {
@@ -135,6 +135,11 @@ public class UserPanelController {
             }
             refresh();
         }
+    }
+
+    @FXML
+    private void validateEmail() {
+        Validator.applyEmailStyle(fEmail);
     }
 
     @FXML

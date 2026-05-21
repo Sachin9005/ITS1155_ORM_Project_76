@@ -50,6 +50,7 @@ public class TherapyProgramBOImpl {
     public List<TherapyProgramDTO> getAllTherapyPrograms(){
         List<TherapyProgram> therapyPrograms = therapyProgramDAO.getAll();
         return therapyPrograms.stream().map(tp -> TherapyProgramDTO.builder()
+                .id(tp.getId())
                 .programId(tp.getProgramId())
                 .name(tp.getName())
                 .duration(tp.getDuration())

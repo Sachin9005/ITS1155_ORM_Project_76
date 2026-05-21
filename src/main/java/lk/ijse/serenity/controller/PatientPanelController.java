@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import lk.ijse.serenity.bo.PatientBOImpl;
 import lk.ijse.serenity.dto.PatientDTO;
 import lk.ijse.serenity.exception.SerenityException;
+import lk.ijse.serenity.util.Validator;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -164,6 +165,16 @@ public class PatientPanelController {
             svc.deletePatient(p);
             refresh();
         }
+    }
+
+    @FXML
+    private void validateEmail() {
+        Validator.applyEmailStyle(fEmail);
+    }
+
+    @FXML
+    private void validatePhone() {
+        Validator.applyPhoneStyle(fPhone);
     }
 
     @FXML

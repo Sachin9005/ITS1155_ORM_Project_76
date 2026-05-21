@@ -36,7 +36,8 @@ public class Converter {
     public static TherapyProgramDTO toTherapyProgramDTO(TherapyProgram therapyProgram) {
        if (therapyProgram == null) return null;
        return TherapyProgramDTO.builder()
-                .programId(String.valueOf(therapyProgram.getId()))
+                .id(therapyProgram.getId())
+                .programId(therapyProgram.getProgramId())
                 .name(therapyProgram.getName())
                 .duration(therapyProgram.getDuration())
                 .fee(therapyProgram.getFee())
@@ -47,7 +48,8 @@ public class Converter {
     public static TherapyProgram  toTherapyProgramEntity(TherapyProgramDTO dto) {
         if (dto == null) return null;
         TherapyProgram therapyProgram = new TherapyProgram();
-        therapyProgram.setId(dto.getProgramId() != null ? Long.parseLong(dto.getProgramId()) : null);
+        therapyProgram.setId(dto.getId());
+        therapyProgram.setProgramId(dto.getProgramId());
         therapyProgram.setName(dto.getName());
         therapyProgram.setDuration(dto.getDuration());
         therapyProgram.setFee(dto.getFee());

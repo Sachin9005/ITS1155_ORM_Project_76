@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import lk.ijse.serenity.bo.TherapistBOImpl;
 import lk.ijse.serenity.dto.TherapistDTO;
 import lk.ijse.serenity.exception.SerenityException;
+import lk.ijse.serenity.util.Validator;
 
 public class TherapistPanelController {
 
@@ -152,6 +153,16 @@ public class TherapistPanelController {
                 new Alert(Alert.AlertType.ERROR, "Failed to delete therapist. Please try again.").showAndWait();
             }
         }
+    }
+
+    @FXML
+    private void validateEmail() {
+        Validator.applyEmailStyle(fEmail);
+    }
+
+    @FXML
+    private void validatePhone() {
+        Validator.applyPhoneStyle(fPhone);
     }
 
     @FXML
