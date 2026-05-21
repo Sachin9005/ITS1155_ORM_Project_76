@@ -8,6 +8,7 @@ import org.hibernate.query.Query;
 import java.util.Optional;
 
 public class UserDAOImpl extends CrudDAOImpl<User> {
+    public UserDAOImpl() { super(User.class); }
 
     public Optional<User> findByUsername(String username) {
         try (Session session = FactoryConfiguration.getInstance().getSession()) {

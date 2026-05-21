@@ -29,6 +29,24 @@ public class PaymentBOImpl {
         }
     }
 
+    public boolean updatePayment(PaymentDTO paymentDTO) {
+        try {
+            Payment payment = Payment.builder()
+                    .invoiceNumber(paymentDTO.getInvoiceNumber())
+                    .patient(paymentDTO.getPatient())
+                    .therapySession(paymentDTO.getTherapySession())
+                    .amount(paymentDTO.getAmount())
+                    .paymentDate(paymentDTO.getPaymentDate())
+                    .status(paymentDTO.getStatus())
+                    .paymentMethod(paymentDTO.getPaymentMethod())
+                    .build();
+            return paymentDAO.update(payment);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public BigDecimal totalRevenue() {
         return paymentDAO.totalRevenue();
     }

@@ -161,7 +161,7 @@ public class PatientPanelController {
 
     private void deletePatient(PatientDTO p) {
         if (new Alert(Alert.AlertType.CONFIRMATION, "Delete Patient").showAndWait().get() == ButtonType.OK) {
-            svc.deletePatient(p);;
+            svc.deletePatient(p);
             refresh();
         }
     }

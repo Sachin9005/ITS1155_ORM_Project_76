@@ -227,14 +227,15 @@ public class PaymentPanelController {
     }
 
     private void refund(PaymentDTO p) {
-
-        if (new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to refund " + p.getInvoiceNumber() + " this payment?").showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
-            boolean isSaved = paymentSvc.savePayment(p);
+        if (new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to refund " + p.getInvoiceNumber() + "?").showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            p.setStatus(Payment.Status.REFUNDED);
+            boolean isSaved = paymentSvc.updatePayment(p); // Assuming we should update, savePayment might also work if it calls merge
             if(!isSaved){
                 new Alert(Alert.AlertType.ERROR, "Failed to process refund. Please try again.").showAndWait();
+            } else {
+                refresh();
+                new Alert(Alert.AlertType.INFORMATION, "Payment refunded successfully!").showAndWait();
             }
-            refresh();
-            new Alert(Alert.AlertType.INFORMATION, "Payment refunded successfully!").showAndWait();
         }
     }
 

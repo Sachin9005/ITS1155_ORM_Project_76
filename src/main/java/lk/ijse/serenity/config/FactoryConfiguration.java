@@ -4,8 +4,8 @@ import lk.ijse.serenity.entity.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
+import java.io.InputStream;
 import java.util.Properties;
 
 public class FactoryConfiguration {
@@ -14,19 +14,27 @@ public class FactoryConfiguration {
     private FactoryConfiguration() {
         try {
             Properties props = new Properties();
-            props.load(Files.newInputStream(Paths.get("hibernate.properties")));
+            InputStream is = FactoryConfiguration.class.getClassLoader()
+                    .getResourceAsStream("hibernate.properties");
+            if (is != null) {
+                props.load(is);
+                is.close();
+            } else {
+                System.out.println("hibernate.properties not found on classpath!");
+            }
             Configuration cfg = new Configuration().setProperties(props);
 
             cfg.addAnnotatedClass(Patient.class);
-            cfg.addAnnotatedClass(TherapyProgram.class);
-            cfg.addAnnotatedClass(Payment.class);
             cfg.addAnnotatedClass(Therapist.class);
             cfg.addAnnotatedClass(TherapyProgram.class);
+            cfg.addAnnotatedClass(TherapySession.class);
+            cfg.addAnnotatedClass(Payment.class);
             cfg.addAnnotatedClass(User.class);
 
             sessionFactory = cfg.buildSessionFactory();
-        }catch (Exception ignored){
-            System.out.println("Unable to load hibernate.properties");
+        }catch (Exception e){
+            System.out.println("Unable to load hibernate configuration: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

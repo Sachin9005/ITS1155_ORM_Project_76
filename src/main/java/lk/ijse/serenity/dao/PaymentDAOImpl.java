@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import java.math.BigDecimal;
 
 public class PaymentDAOImpl extends CrudDAOImpl<Payment>{
+    public PaymentDAOImpl() { super(Payment.class); }
 
     public String nextInvoiceNumber() {
         try(Session session = FactoryConfiguration.getInstance().getSession()) {

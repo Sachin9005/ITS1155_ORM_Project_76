@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import java.util.List;
 
 public class TherapistDAOImpl extends  CrudDAOImpl<Therapist>{
+    public TherapistDAOImpl() { super(Therapist.class); }
 
     public List<Therapist> findAll() {
         Session session = FactoryConfiguration.getInstance().getSession();

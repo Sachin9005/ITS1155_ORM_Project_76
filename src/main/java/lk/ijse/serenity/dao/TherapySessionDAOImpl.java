@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class TherapySessionDAOImpl extends CrudDAOImpl<TherapySession>{
+    public TherapySessionDAOImpl() { super(TherapySession.class); }
 
     public boolean hasConflict(Long therapistId, LocalDateTime proposedTime, Long excludeSessionId) {
         try (Session session = FactoryConfiguration.getInstance().getSession()) {

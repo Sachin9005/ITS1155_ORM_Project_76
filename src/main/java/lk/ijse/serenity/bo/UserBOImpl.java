@@ -17,7 +17,7 @@ public class UserBOImpl {
 
     private UserDAOImpl userDAOImpl = new UserDAOImpl();
 
-    private UserDTO currentUser;
+    private static UserDTO currentUser;
 
     public String hashPassword(String plainPassword) {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt(12));

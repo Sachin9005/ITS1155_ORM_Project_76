@@ -38,7 +38,7 @@ public class TherapyProgram {
     @Column(name = "description", length = 500)
     private String description;
 
-    @ManyToMany(mappedBy = "programs", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "therapyPrograms", fetch = FetchType.LAZY)
     private List<Therapist> therapists = new ArrayList<>();
 
     @OneToMany(mappedBy = "therapyProgram", cascade = CascadeType.ALL,

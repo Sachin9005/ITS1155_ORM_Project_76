@@ -7,5 +7,6 @@ import org.hibernate.Session;
 import java.util.List;
 
 public class TherapyProgramDAOImpl extends CrudDAOImpl<TherapyProgram>{
+    public TherapyProgramDAOImpl() { super(TherapyProgram.class); }
 
 }

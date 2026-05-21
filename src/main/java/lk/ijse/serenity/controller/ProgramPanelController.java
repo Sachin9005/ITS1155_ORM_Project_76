@@ -111,7 +111,7 @@ public class ProgramPanelController {
                         .description(fDesc.getText().trim())
                         .build();;
                 boolean isSaved = svc.saveTherapyProgram(therapyProgramDTO);
-                if (isSaved) {
+                if (!isSaved) {
                     throw new SerenityException("Failed to save the therapy program.");
                 }
                 new Alert(Alert.AlertType.INFORMATION, "Therapy program created successfully!").showAndWait();
@@ -121,7 +121,7 @@ public class ProgramPanelController {
                 editing.setFee(fee);
                 editing.setDescription(fDesc.getText());
                 boolean isUpdate = svc.updateTherapyProgram(editing);
-                if (isUpdate) {
+                if (!isUpdate) {
                     throw new SerenityException("Failed to update the therapy program.");
                 }
                 new Alert(Alert.AlertType.INFORMATION, "Therapy program updated successfully!").showAndWait();

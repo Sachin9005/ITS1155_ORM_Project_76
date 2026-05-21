@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import java.util.List;
 
 public class PatientDAOImpl extends  CrudDAOImpl<Patient>{
+    public PatientDAOImpl() { super(Patient.class); }
     public List<Patient> findPatientsEnrolledInAllPrograms() {
         try (Session session = FactoryConfiguration.getInstance().getSession()) {
             String hql =
