@@ -4,6 +4,7 @@ import lk.ijse.serenity.dao.TherapyProgramDAOImpl;
 import lk.ijse.serenity.dto.TherapyProgramDTO;
 import lk.ijse.serenity.entity.TherapyProgram;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class TherapyProgramBOImpl {
@@ -55,5 +56,20 @@ public class TherapyProgramBOImpl {
                 .fee(tp.getFee())
                 .description(tp.getDescription())
                 .build()).toList();
+    }
+
+    public void seedDefaultPrograms() {
+        if (therapyProgramDAO.getAll().isEmpty()) {
+            saveTherapyProgram(new TherapyProgramDTO("MT1001", "Cognitive Behavioral Therapy", "12 weeks",
+                    new BigDecimal("80000.00"), "Evidence-based talk therapy."));
+            saveTherapyProgram(new TherapyProgramDTO("MT1002", "Mindfulness-Based Stress Reduction", "8 weeks",
+                    new BigDecimal("50000.00"), "Mindfulness techniques for stress."));
+            saveTherapyProgram(new TherapyProgramDTO("MT1003", "Dialectical Behavior Therapy", "16 weeks",
+                    new BigDecimal("100000.00"), "DBT for emotional regulation."));
+            saveTherapyProgram(new TherapyProgramDTO("MT1004", "Group Therapy Sessions", "6 months",
+                    new BigDecimal("120000.00"), "Peer-supported group sessions."));
+            saveTherapyProgram(new TherapyProgramDTO("MT1005", "Family Counseling", "3 months",
+                    new BigDecimal("40000.00"), "Family-focused counseling."));
+        }
     }
 }

@@ -4,10 +4,14 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import lk.ijse.serenity.bo.TherapyProgramBOImpl;
+import lk.ijse.serenity.bo.UserBOImpl;
 import lk.ijse.serenity.config.FactoryConfiguration;
 
 public class MainApp extends Application {
     public static Stage primaryStage;
+    private UserBOImpl userBOImpl = new UserBOImpl();
+    private TherapyProgramBOImpl therapyProgramBOImpl = new TherapyProgramBOImpl();
 
     public static void showLogin() throws Exception {
         FXMLLoader loader = new FXMLLoader(
@@ -42,8 +46,9 @@ public class MainApp extends Application {
         primaryStage = stage;
 
         // Initialise Hibernate & seed data
-        // UserBO.getInstance().ensureDefaultAdmin();
-        // TherapyProgramBO.getInstance().seedDefaultPrograms();
+        FactoryConfiguration.getInstance().getSession();
+        userBOImpl.ensureDefaultAdmin();
+        therapyProgramBOImpl.seedDefaultPrograms();
 
         showLogin();
 

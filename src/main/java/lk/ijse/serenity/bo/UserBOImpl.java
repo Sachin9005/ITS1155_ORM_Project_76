@@ -115,5 +115,29 @@ public class UserBOImpl {
         userDAOImpl.update(Converter.toUserEntity(currentUser));
     }
 
+    public void ensureDefaultAdmin() {
+        if (userDAOImpl.getAll().isEmpty()) {
+
+            User admin = User.builder()
+                    .username("admin")
+                    .passwordHash(hashPassword("Admin@123"))
+                    .role(User.Role.ADMIN)
+                    .fullName("System Administrator")
+                    .email("admin@serenity.lk")
+                    .build();
+
+            userDAOImpl.save(admin);
+
+            User recep = User.builder()
+                    .username("receptionist")
+                    .passwordHash(hashPassword("Recep@123"))
+                    .role(User.Role.RECEPTIONIST)
+                    .fullName("Front Desk")
+                    .email("reception@serenity.lk")
+                    .build();
+            userDAOImpl.save(recep);
+        }
+    }
+
 }
 
